@@ -1,0 +1,58 @@
+{
+  "name": "@fetchmax/plugin-dedupe",
+  "version": "1.0.0",
+  "description": "Deduplication plugin for FetchMax to prevent duplicate simultaneous requests",
+  "type": "module",
+  "main": "./dist/index.js",
+  "module": "./dist/index.js",
+  "types": "./dist/index.d.ts",
+  "exports": {
+    ".": {
+      "types": "./dist/index.d.ts",
+      "import": "./dist/index.js",
+      "require": "./dist/index.cjs"
+    }
+  },
+  "files": [
+    "dist",
+    "README.md"
+  ],
+  "scripts": {
+    "build": "tsup src/index.ts --format cjs,esm --dts --clean",
+    "dev": "tsup src/index.ts --format cjs,esm --dts --watch"
+  },
+  "keywords": [
+    "fetchmax",
+    "plugin",
+    "dedupe",
+    "deduplication",
+    "http",
+    "fetch"
+  ],
+  "author": "FetchMax Contributors",
+  "license": "MIT",
+  "repository": {
+    "type": "git",
+    "url": "https://github.com/fetchmax/fetchmax.git",
+    "directory": "packages/plugins/dedupe"
+  },
+  "bugs": {
+    "url": "https://github.com/fetchmax/fetchmax/issues"
+  },
+  "homepage": "https://github.com/fetchmax/fetchmax#readme",
+  "sideEffects": false,
+  "publishConfig": {
+    "access": "public"
+  },
+  "engines": {
+    "node": ">=18.0.0"
+  },
+  "peerDependencies": {
+    "@fetchmax/core": "^1.0.0"
+  },
+  "devDependencies": {
+    "@fetchmax/core": "workspace:*",
+    "tsup": "^8.0.1",
+    "typescript": "^5.3.3"
+  }
+}
