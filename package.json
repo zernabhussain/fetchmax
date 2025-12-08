@@ -12,7 +12,7 @@
     "dev": "vite",
     "build": "npm run build:core && npm run build:plugins",
     "build:core": "cd packages/core && npm run build",
-    "build:plugins": "node scripts/build-plugins.js",
+    "build:plugins": "node scripts/build-plugins.cjs",
     "test": "vitest",
     "test:unit": "vitest run tests/unit",
     "test:integration": "vitest run tests/integration",

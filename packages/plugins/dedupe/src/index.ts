@@ -18,7 +18,7 @@ export function dedupePlugin(): Plugin & { clear: () => void } {
   const plugin: any = {
     name: 'dedupe',
 
-    async onRequest(request: any, context: PluginContext) {
+    async onRequest(request: any, _context: PluginContext) {
       const key = getCacheKey(request);
 
       if (pendingRequests.has(key)) {
@@ -56,7 +56,7 @@ export function dedupePlugin(): Plugin & { clear: () => void } {
       };
     },
 
-    async onResponse(response: HttpResponse, request: any, context: PluginContext) {
+    async onResponse(response: HttpResponse, request: any, _context: PluginContext) {
       if (request.__dedupeKey) {
         const pending = pendingRequests.get(request.__dedupeKey);
         if (pending) {
@@ -76,7 +76,7 @@ export function dedupePlugin(): Plugin & { clear: () => void } {
       return response;
     },
 
-    async onError(error: any, request: any, context: PluginContext) {
+    async onError(error: any, request: any, _context: PluginContext) {
       if (request.__dedupeKey) {
         const pending = pendingRequests.get(request.__dedupeKey);
         if (pending) {

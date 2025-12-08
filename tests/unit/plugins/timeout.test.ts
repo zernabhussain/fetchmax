@@ -25,12 +25,13 @@ describe('Timeout Plugin', () => {
 
       const client = new HttpClient().use(timeoutPlugin({ timeout: 1000 }));
 
-      const promise = client.get('https://api.test.com/slow');
+      const promise = client.get('https://api.test.com/slow').catch(e => e);
 
       // Advance timers past timeout
       await vi.advanceTimersByTimeAsync(1001);
 
-      await expect(promise).rejects.toThrow(TimeoutError);
+      const error = await promise;
+      expect(error).toBeInstanceOf(TimeoutError);
     });
 
     it('should not timeout if request completes in time', async () => {
@@ -56,14 +57,11 @@ describe('Timeout Plugin', () => {
 
       const client = new HttpClient().use(timeoutPlugin({ timeout: 2000 }));
 
-      const promise = client.get('https://api.test.com/slow');
+      const promise = client.get('https://api.test.com/slow').catch(e => e);
       await vi.advanceTimersByTimeAsync(2001);
 
-      try {
-        await promise;
-      } catch (error: any) {
-        expect(error.message).toContain('2000ms');
-      }
+      const error = await promise;
+      expect(error.message).toContain('2000ms');
     });
   });
 
@@ -83,15 +81,12 @@ describe('Timeout Plugin', () => {
         })
       );
 
-      const promise = client.get('https://api.test.com/slow');
+      const promise = client.get('https://api.test.com/slow').catch(e => e);
       await vi.advanceTimersByTimeAsync(1001);
 
-      try {
-        await promise;
-      } catch (error: any) {
-        expect(error.message).toBe('Custom timeout error');
-        expect(error).toBeInstanceOf(TimeoutError);
-      }
+      const error = await promise;
+      expect(error.message).toBe('Custom timeout error');
+      expect(error).toBeInstanceOf(TimeoutError);
     });
   });
 
@@ -123,11 +118,12 @@ describe('Timeout Plugin', () => {
       const client = new HttpClient().use(timeoutPlugin({ timeout: 5000 }));
 
       // Override with shorter timeout
-      const promise = client.get('https://api.test.com/data', { timeout: 500 });
+      const promise = client.get('https://api.test.com/data', { timeout: 500 }).catch(e => e);
 
       await vi.advanceTimersByTimeAsync(501);
 
-      await expect(promise).rejects.toThrow(TimeoutError);
+      const error = await promise;
+      expect(error).toBeInstanceOf(TimeoutError);
     });
   });
 
@@ -197,11 +193,12 @@ describe('Timeout Plugin', () => {
 
       const promise = client.get('https://api.test.com/data', {
         signal: controller.signal
-      });
+      }).catch(e => e);
 
       await vi.advanceTimersByTimeAsync(101);
 
-      await expect(promise).rejects.toThrow();
+      const error = await promise;
+      expect(error).toBeInstanceOf(Error);
     });
   });
 
@@ -220,14 +217,15 @@ describe('Timeout Plugin', () => {
       const client = new HttpClient().use(timeoutPlugin({ timeout: 1000 }));
 
       const fastPromise = client.get('https://api.test.com/fast');
-      const slowPromise = client.get('https://api.test.com/slow');
+      const slowPromise = client.get('https://api.test.com/slow').catch(e => e);
 
       const fastResponse = await fastPromise;
       expect(fastResponse.data).toEqual({ data: 'fast' });
 
       await vi.advanceTimersByTimeAsync(1001);
 
-      await expect(slowPromise).rejects.toThrow(TimeoutError);
+      const error = await slowPromise;
+      expect(error).toBeInstanceOf(TimeoutError);
     });
   });
 
@@ -245,10 +243,11 @@ describe('Timeout Plugin', () => {
 
       const client = new HttpClient().use(timeoutPlugin({ timeout: 500 }));
 
-      const promise = client.get('https://api.test.com/data');
+      const promise = client.get('https://api.test.com/data').catch(e => e);
       await vi.advanceTimersByTimeAsync(501);
 
-      await expect(promise).rejects.toThrow(TimeoutError);
+      const error = await promise;
+      expect(error).toBeInstanceOf(TimeoutError);
       expect(attemptCount).toBe(1);
     });
   });

@@ -1,24 +1,20 @@
 # Dependencies
 node_modules/
-.pnp
-.pnp.js
-
-# Testing
-coverage/
-.nyc_output/
-*.lcov
+package-lock.json
 
 # Build outputs
 dist/
 build/
 *.tsbuildinfo
 
-# Environment variables
-.env
-.env.local
-.env.development.local
-.env.test.local
-.env.production.local
+# Test coverage
+coverage/
+.nyc_output/
+
+# Playwright
+test-results/
+playwright-report/
+playwright/.cache/
 
 # IDE
 .vscode/
@@ -26,30 +22,22 @@ build/
 *.swp
 *.swo
 *~
-.DS_Store
-
-# Logs
-logs/
-*.log
-npm-debug.log*
-yarn-debug.log*
-yarn-error.log*
-lerna-debug.log*
-pnpm-debug.log*
-
-# Temporary files
-*.tmp
-*.temp
-.cache/
-.parcel-cache/
 
 # OS
 .DS_Store
 Thumbs.db
 
-# Package manager locks (keep package-lock.json, remove others if needed)
-# yarn.lock
-# pnpm-lock.yaml
+# Logs
+*.log
+npm-debug.log*
+yarn-debug.log*
+yarn-error.log*
 
-# Claude AI notes and documentation
-claude.md
+# Environment
+.env
+.env.local
+.env.*.local
+
+# Temp files
+*.tmp
+.cache/

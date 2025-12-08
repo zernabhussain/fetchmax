@@ -61,14 +61,15 @@ describe('Retry Plugin', () => {
         })
       );
 
-      const promise = client.get('https://api.test.com/always-fails');
+      const promise = client.get('https://api.test.com/always-fails').catch(e => e);
 
       // Advance timers for all retries
       for (let i = 0; i < 3; i++) {
         await vi.advanceTimersByTimeAsync(100 * Math.pow(2, i) + 50);
       }
 
-      await expect(promise).rejects.toThrow();
+      const error = await promise;
+      expect(error).toBeInstanceOf(Error);
       expect(attempts).toBe(3); // Initial + 2 retries
     });
 
@@ -494,11 +495,12 @@ describe('Retry Plugin', () => {
         retryPlugin({ maxRetries: 2, retryDelay: 50 })
       );
 
-      const promise = client.get('https://api.test.com/test');
+      const promise = client.get('https://api.test.com/test').catch(e => e);
       await vi.advanceTimersByTimeAsync(200);
 
       // Network errors will still throw
-      await expect(promise).rejects.toThrow();
+      const error = await promise;
+      expect(error).toBeInstanceOf(Error);
     });
 
     it('should handle timeout during retry', async () => {
@@ -518,11 +520,12 @@ describe('Retry Plugin', () => {
 
       const promise = client.get('https://api.test.com/test', {
         timeout: 50
-      });
+      }).catch(e => e);
 
       await vi.advanceTimersByTimeAsync(500);
 
-      await expect(promise).rejects.toThrow();
+      const error = await promise;
+      expect(error).toBeInstanceOf(Error);
     });
 
     it('should preserve error data across retries', async () => {
@@ -542,19 +545,16 @@ describe('Retry Plugin', () => {
         retryPlugin({ maxRetries: 2, retryDelay: 50 })
       );
 
-      const promise = client.get('https://api.test.com/test');
+      const promise = client.get('https://api.test.com/test').catch(e => e);
 
       for (let i = 0; i < 3; i++) {
         await vi.advanceTimersByTimeAsync(100);
       }
 
-      try {
-        await promise;
-      } catch (error: any) {
-        expect(error.data).toBeDefined();
-        expect(error.data.error).toBe('Server error');
-        expect(error.data.attempt).toBe(3); // Last attempt's data
-      }
+      const error = await promise;
+      expect(error.data).toBeDefined();
+      expect(error.data.error).toBe('Server error');
+      expect(error.data.attempt).toBe(3); // Last attempt's data
     });
 
     it('should handle mixed HTTP methods in retries', async () => {
@@ -659,20 +659,22 @@ describe('Retry Plugin', () => {
       );
 
       // First request
-      const promise1 = client.get('https://api.test.com/test');
+      const promise1 = client.get('https://api.test.com/test').catch(e => e);
       for (let i = 0; i < 3; i++) {
         await vi.advanceTimersByTimeAsync(100);
       }
-      await expect(promise1).rejects.toThrow();
+      const error1 = await promise1;
+      expect(error1).toBeInstanceOf(Error);
 
       isFirstRequest = false;
 
       // Second request
-      const promise2 = client.get('https://api.test.com/test');
+      const promise2 = client.get('https://api.test.com/test').catch(e => e);
       for (let i = 0; i < 3; i++) {
         await vi.advanceTimersByTimeAsync(100);
       }
-      await expect(promise2).rejects.toThrow();
+      const error2 = await promise2;
+      expect(error2).toBeInstanceOf(Error);
 
       expect(firstRetries).toEqual([1, 2]);
       expect(secondRetries).toEqual([1, 2]);

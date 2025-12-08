@@ -173,7 +173,7 @@ export function interceptorPlugin(): Plugin & {
     /**
      * Plugin hook: Run all request interceptors
      */
-    async onRequest(request: any, context: PluginContext) {
+    async onRequest(request: any, _context: PluginContext) {
       let modifiedRequest = request;
 
       for (const interceptor of requestInterceptors) {
@@ -191,7 +191,7 @@ export function interceptorPlugin(): Plugin & {
     /**
      * Plugin hook: Run all response interceptors
      */
-    async onResponse(response: HttpResponse, request: any, context: PluginContext) {
+    async onResponse(response: HttpResponse, _request: any, _context: PluginContext) {
       let modifiedResponse = response;
 
       for (const interceptor of responseInterceptors) {
@@ -209,7 +209,7 @@ export function interceptorPlugin(): Plugin & {
     /**
      * Plugin hook: Run all error interceptors
      */
-    async onError(error: HttpError, request: any, context: PluginContext) {
+    async onError(error: HttpError, _request: any, _context: PluginContext) {
       let currentError: any = error;
 
       for (const interceptor of errorInterceptors) {

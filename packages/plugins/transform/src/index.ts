@@ -11,14 +11,14 @@ export function transformPlugin(config: TransformConfig = {}): Plugin {
   return {
     name: 'transform',
 
-    async onRequest(request: any, context: PluginContext) {
+    async onRequest(request: any, _context: PluginContext) {
       if (transformRequest && request.body) {
         request.body = transformRequest(request.body, request.headers || {});
       }
       return request;
     },
 
-    async onResponse(response: HttpResponse, request: any, context: PluginContext) {
+    async onResponse(response: HttpResponse, _request: any, _context: PluginContext) {
       if (transformResponse) {
         const headers: Record<string, string> = {};
         response.headers.forEach((value, key) => {

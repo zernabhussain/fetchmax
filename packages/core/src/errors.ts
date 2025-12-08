@@ -32,6 +32,33 @@ export class HttpError extends Error implements IHttpError {
       Error.captureStackTrace(this, HttpError);
     }
   }
+
+  /**
+   * Custom JSON serialization to avoid circular reference issues with Response objects
+   */
+  toJSON() {
+    return {
+      name: this.name,
+      message: this.message,
+      status: this.status,
+      statusText: this.statusText,
+      data: this.data,
+      code: this.code,
+      // Exclude complex objects that can't be serialized
+      config: this.config ? {
+        url: this.config.url,
+        method: this.config.method,
+        baseURL: this.config.baseURL
+      } : undefined,
+      // Don't include the Response object as it has circular references
+      response: this.response ? {
+        status: this.response.status,
+        statusText: this.response.statusText,
+        ok: this.response.ok,
+        url: this.response.url
+      } : undefined
+    };
+  }
 }
 
 /**

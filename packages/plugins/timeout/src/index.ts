@@ -1,5 +1,5 @@
 import type { Plugin, PluginContext } from '@fetchmax/core';
-import { TimeoutError, AbortError } from '@fetchmax/core';
+import { TimeoutError } from '@fetchmax/core';
 
 export interface TimeoutConfig {
   /** Timeout in milliseconds */
@@ -31,7 +31,7 @@ export function timeoutPlugin(config: TimeoutConfig): Plugin {
   return {
     name: 'timeout',
 
-    async onRequest(request: any, context: PluginContext) {
+    async onRequest(request: any, _context: PluginContext) {
       // Get timeout from request config or use default
       const timeout = request.timeout || defaultTimeout;
 
@@ -63,7 +63,7 @@ export function timeoutPlugin(config: TimeoutConfig): Plugin {
       return request;
     },
 
-    async onResponse(response: any, request: any, context: PluginContext) {
+    async onResponse(response: any, request: any, _context: PluginContext) {
       // Clear timeout on successful response
       if (request.__timeoutId) {
         clearTimeout(request.__timeoutId);
@@ -73,11 +73,7 @@ export function timeoutPlugin(config: TimeoutConfig): Plugin {
       return response;
     },
 
-    async onError(error: any, request: any, context: PluginContext) {
-      console.log('[TIMEOUT DEBUG] request.__timeoutFired:', request.__timeoutFired);
-      console.log('[TIMEOUT DEBUG] request.__timeoutValue:', request.__timeoutValue);
-      console.log('[TIMEOUT DEBUG] error:', error.constructor.name);
-
+    async onError(error: any, request: any, _context: PluginContext) {
       // Don't clear timeout here - we need to know if it fired
 
       // Check if this was a timeout by seeing if timeout fired

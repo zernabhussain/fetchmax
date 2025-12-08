@@ -100,7 +100,7 @@ export function loggerPlugin(config: LoggerConfig = {}): Plugin {
   return {
     name: 'logger',
 
-    async onRequest(request: any, context: PluginContext) {
+    async onRequest(request: any, _context: PluginContext) {
       // Store start time
       request.__startTime = Date.now();
 
@@ -137,7 +137,7 @@ export function loggerPlugin(config: LoggerConfig = {}): Plugin {
       return request;
     },
 
-    async onResponse(response: HttpResponse, request: any, context: PluginContext) {
+    async onResponse(response: HttpResponse, request: any, _context: PluginContext) {
       // Skip if logging was disabled for this request
       if (request.__skipLogging) {
         return response;
@@ -207,7 +207,7 @@ export function loggerPlugin(config: LoggerConfig = {}): Plugin {
       return response;
     },
 
-    async onError(error: HttpError, request: any, context: PluginContext) {
+    async onError(error: HttpError, request: any, _context: PluginContext) {
       // Skip if logging was disabled for this request
       if (request.__skipLogging) {
         throw error;

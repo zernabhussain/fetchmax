@@ -110,6 +110,9 @@ export function rateLimitPlugin(config: RateLimitConfig): Plugin & {
    * Process queued requests
    */
   function processQueue(): void {
+    // Clear the timeout reference since we're running now
+    queueProcessorTimeout = null;
+
     removeExpiredTimestamps();
 
     // Process as many queued requests as possible
@@ -118,9 +121,6 @@ export function rateLimitPlugin(config: RateLimitConfig): Plugin & {
       if (item) {
         timestamps.push(Date.now());
         item.resolve();
-
-        // Immediately check if we can process more after this one
-        removeExpiredTimestamps();
       }
     }
 
@@ -213,7 +213,7 @@ export function rateLimitPlugin(config: RateLimitConfig): Plugin & {
   } = {
     name: 'rate-limit',
 
-    async onRequest(request: any, context: PluginContext) {
+    async onRequest(request: any, _context: PluginContext) {
       await waitForSlot();
       return request;
     },

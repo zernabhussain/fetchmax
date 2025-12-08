@@ -63,7 +63,7 @@ export function cachePlugin(config: CacheConfig = {}): Plugin & {
     maxSize = 100,
     methods = ['GET'],
     exclude = [],
-    storage = 'memory',
+    storage: _storage = 'memory',
     keyGenerator,
     debug = false
   } = config;
@@ -168,7 +168,7 @@ export function cachePlugin(config: CacheConfig = {}): Plugin & {
   } = {
     name: 'cache',
 
-    async onRequest(request: any, context: PluginContext) {
+    async onRequest(request: any, _context: PluginContext) {
       // Only cache specific methods
       const method = request.method?.toUpperCase() || 'GET';
       if (!methods.includes(method)) {
@@ -214,7 +214,7 @@ export function cachePlugin(config: CacheConfig = {}): Plugin & {
       };
     },
 
-    async onResponse(response: HttpResponse, config: any, context: PluginContext) {
+    async onResponse(response: HttpResponse, config: any, _context: PluginContext) {
       // Don't cache if no cache key (excluded or wrong method)
       if (!config.__cacheKey) {
         return response;
