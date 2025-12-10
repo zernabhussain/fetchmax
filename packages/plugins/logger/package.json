@@ -52,7 +52,7 @@
     "@fetchmax/core": "^1.0.0"
   },
   "devDependencies": {
-    "@fetchmax/core": "workspace:*",
+    "@fetchmax/core": "*",
     "tsup": "^8.0.1",
     "typescript": "^5.3.3"
   }

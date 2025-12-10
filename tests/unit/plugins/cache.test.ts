@@ -1,6 +1,6 @@
 import { describe, it, expect, beforeEach, vi } from 'vitest';
-import { HttpClient } from '../../../packages/core/src/client';
-import { cachePlugin } from '../../../packages/plugins/cache/src/index';
+import { HttpClient } from '@fetchmax/core';
+import { cachePlugin } from '@fetchmax/plugin-cache';
 import { http } from 'msw';
 import { server } from '../../setup';
 

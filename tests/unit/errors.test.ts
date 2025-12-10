@@ -1,4 +1,5 @@
 import { describe, it, expect } from 'vitest';
+import type { RequestConfig } from '@fetchmax/core';
 import {
   HttpError,
   NetworkError,
@@ -8,8 +9,7 @@ import {
   ServerError,
   ParseError,
   createHttpError
-} from '../../packages/core/src/errors';
-import type { RequestConfig } from '../../packages/core/src/types';
+} from '@fetchmax/core';
 
 describe('Errors', () => {
   const mockConfig: RequestConfig = {

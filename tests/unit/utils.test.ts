@@ -1,4 +1,5 @@
 import { describe, it, expect } from 'vitest';
+import type { RequestConfig } from '@fetchmax/core';
 import {
   buildURL,
   mergeConfig,
@@ -9,8 +10,7 @@ import {
   isBrowser,
   isNode,
   delay
-} from '../../packages/core/src/utils';
-import type { RequestConfig } from '../../packages/core/src/types';
+} from '@fetchmax/core';
 
 describe('Utils', () => {
   describe('buildURL', () => {

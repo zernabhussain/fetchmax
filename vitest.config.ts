@@ -32,7 +32,17 @@ export default defineConfig({
   },
   resolve: {
     alias: {
+      // Test against source files (for development)
       '@fetchmax/core': path.resolve(__dirname, './packages/core/src'),
+      '@fetchmax/plugin-retry': path.resolve(__dirname, './packages/plugins/retry/src'),
+      '@fetchmax/plugin-timeout': path.resolve(__dirname, './packages/plugins/timeout/src'),
+      '@fetchmax/plugin-cache': path.resolve(__dirname, './packages/plugins/cache/src'),
+      '@fetchmax/plugin-dedupe': path.resolve(__dirname, './packages/plugins/dedupe/src'),
+      '@fetchmax/plugin-interceptors': path.resolve(__dirname, './packages/plugins/interceptors/src'),
+      '@fetchmax/plugin-logger': path.resolve(__dirname, './packages/plugins/logger/src'),
+      '@fetchmax/plugin-progress': path.resolve(__dirname, './packages/plugins/progress/src'),
+      '@fetchmax/plugin-rate-limit': path.resolve(__dirname, './packages/plugins/rate-limit/src'),
+      '@fetchmax/plugin-transform': path.resolve(__dirname, './packages/plugins/transform/src'),
       '@fetchmax/plugins': path.resolve(__dirname, './packages/plugins')
     }
   }

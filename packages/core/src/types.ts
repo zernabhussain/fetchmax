@@ -75,6 +75,8 @@ export interface HttpError extends Error {
   response?: Response;
   /** Error code */
   code?: string;
+  /** Convert error to JSON (avoiding circular references) */
+  toJSON(): any;
 }
 
 /**

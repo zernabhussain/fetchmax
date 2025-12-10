@@ -1,6 +1,5 @@
 import { describe, it, expect, beforeEach, vi } from 'vitest';
-import { HttpClient, createClient } from '../../packages/core/src/client';
-import { HttpError, NetworkError, RequestError, ServerError } from '../../packages/core/src/errors';
+import { HttpClient, createClient, HttpError, NetworkError, RequestError, ServerError } from '@fetchmax/core';
 import { http } from 'msw';
 import { server } from '../setup';
 

@@ -1,6 +1,6 @@
 import { describe, it, expect, vi } from 'vitest';
-import { HttpClient } from '../../../packages/core/src/client';
-import { progressPlugin, type ProgressEvent } from '../../../packages/plugins/progress/src/index';
+import { HttpClient } from '@fetchmax/core';
+import { progressPlugin, type ProgressEvent } from '@fetchmax/plugin-progress';
 import { http } from 'msw';
 import { server } from '../../setup';
 

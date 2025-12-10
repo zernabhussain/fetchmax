@@ -1,6 +1,6 @@
 import { describe, it, expect, vi } from 'vitest';
-import { HttpClient } from '../../../packages/core/src/client';
-import { dedupePlugin } from '../../../packages/plugins/dedupe/src/index';
+import { HttpClient } from '@fetchmax/core';
+import { dedupePlugin } from '@fetchmax/plugin-dedupe';
 import { http, delay } from 'msw';
 import { server } from '../../setup';
 

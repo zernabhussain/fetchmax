@@ -1,6 +1,6 @@
 import { describe, it, expect, vi } from 'vitest';
-import { HttpClient } from '../../../packages/core/src/client';
-import { loggerPlugin } from '../../../packages/plugins/logger/src/index';
+import { HttpClient } from '@fetchmax/core';
+import { loggerPlugin } from '@fetchmax/plugin-logger';
 import { http } from 'msw';
 import { server } from '../../setup';
 

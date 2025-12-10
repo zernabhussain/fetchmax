@@ -1,6 +1,6 @@
 import { describe, it, expect, vi, beforeEach, afterEach } from 'vitest';
-import { HttpClient } from '../../../packages/core/src/client';
-import { rateLimitPlugin, RateLimitError } from '../../../packages/plugins/rate-limit/src/index';
+import { HttpClient } from '@fetchmax/core';
+import { rateLimitPlugin, RateLimitError } from '@fetchmax/plugin-rate-limit';
 import { http } from 'msw';
 import { server } from '../../setup';
 

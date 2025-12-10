@@ -14,7 +14,7 @@ export type {
   HttpMethod,
   RequestConfig,
   HttpResponse,
-  HttpError,
+  HttpError as IHttpError,  // Export interface with different name to avoid conflict
   Plugin,
   PluginContext,
   HttpClientConfig,
@@ -23,7 +23,8 @@ export type {
 
 // Export errors
 export {
-  HttpError as HttpErrorClass,
+  HttpError,
+  HttpError as HttpErrorClass,  // Keep for backwards compatibility
   NetworkError,
   TimeoutError,
   AbortError,

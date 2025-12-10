@@ -1,6 +1,6 @@
 import { describe, it, expect, beforeEach, vi } from 'vitest';
-import { HttpClient } from '../../../packages/core/src/client';
-import { interceptorPlugin } from '../../../packages/plugins/interceptors/src/index';
+import { HttpClient } from '@fetchmax/core';
+import { interceptorPlugin } from '@fetchmax/plugin-interceptors';
 import { http } from 'msw';
 import { server } from '../../setup';
 

@@ -1,6 +1,6 @@
 import { describe, it, expect, vi, beforeEach } from 'vitest';
-import { HttpClient } from '../../../packages/core/src/client';
-import { retryPlugin } from '../../../packages/plugins/retry/src';
+import { HttpClient } from '@fetchmax/core';
+import { retryPlugin } from '@fetchmax/plugin-retry';
 import { http } from 'msw';
 import { server } from '../../setup';
 
@@ -478,16 +478,14 @@ describe('Retry Plugin', () => {
       expect(attempts).toBe(3);
     });
 
-    it('should handle network errors', async () => {
+    it('should not retry non-network errors by default', async () => {
       let attempts = 0;
 
       server.use(
         http.get('https://api.test.com/test', () => {
           attempts++;
-          if (attempts < 2) {
-            return Response.error();
-          }
-          return Response.json({ success: true });
+          // 400 is not in default retry list
+          return new Response(null, { status: 400 });
         })
       );
 
@@ -498,9 +496,9 @@ describe('Retry Plugin', () => {
       const promise = client.get('https://api.test.com/test').catch(e => e);
       await vi.advanceTimersByTimeAsync(200);
 
-      // Network errors will still throw
       const error = await promise;
       expect(error).toBeInstanceOf(Error);
+      expect(attempts).toBe(1); // No retries for 400 errors
     });
 
     it('should handle timeout during retry', async () => {

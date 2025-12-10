@@ -1,6 +1,6 @@
 import { describe, it, expect } from 'vitest';
-import { HttpClient } from '../../../packages/core/src/client';
-import { transformPlugin, transforms } from '../../../packages/plugins/transform/src/index';
+import { HttpClient } from '@fetchmax/core';
+import { transformPlugin, transforms } from '@fetchmax/plugin-transform';
 import { http } from 'msw';
 import { server } from '../../setup';
 

@@ -1,7 +1,6 @@
 import { describe, it, expect, beforeEach, vi, afterEach } from 'vitest';
-import { HttpClient } from '../../../packages/core/src/client';
-import { timeoutPlugin } from '../../../packages/plugins/timeout/src/index';
-import { TimeoutError } from '../../../packages/core/src/errors';
+import { HttpClient, TimeoutError } from '@fetchmax/core';
+import { timeoutPlugin } from '@fetchmax/plugin-timeout';
 import { http, delay } from 'msw';
 import { server } from '../../setup';
 
