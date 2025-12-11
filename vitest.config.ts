@@ -28,6 +28,7 @@ export default defineConfig({
     },
     setupFiles: ['./tests/setup.ts'],
     include: ['tests/**/*.test.ts', 'packages/*/tests/**/*.test.ts'],
+    exclude: ['tests/e2e/**/*.test.ts', 'node_modules/**'],
     testTimeout: 10000
   },
   resolve: {
