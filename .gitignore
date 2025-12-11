@@ -41,3 +41,7 @@ yarn-error.log*
 # Temp files
 *.tmp
 .cache/
+
+# Claude AI files (personal use only - not for open source)
+.claude/
+.claude/**/*
