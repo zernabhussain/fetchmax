@@ -180,6 +180,64 @@ docs(readme): update installation instructions
 test(client): add tests for error handling
 ```
 
+## 🔄 Continuous Integration
+
+FetchMax uses GitHub Actions for continuous integration. The CI pipeline ensures code quality and compatibility across different platforms.
+
+### CI Workflows
+
+**1. Full CI Pipeline (`.github/workflows/ci.yml`)**
+- **Triggers:** Push to `main`, Pull Requests to `main`
+- **Test Matrix:**
+  - Operating Systems: Ubuntu, Windows, macOS
+  - Node.js Versions: 18, 20, 22
+- **Steps:**
+  1. Checkout code
+  2. Setup Node.js with npm cache
+  3. Install dependencies
+  4. Lint code
+  5. Type check
+  6. Build project
+  7. Run unit and integration tests
+  8. Run E2E tests (Ubuntu + Node 20 only)
+  9. Upload test results on failure
+- **Coverage Job:**
+  - Runs separately on Ubuntu + Node 20
+  - Generates coverage report
+  - Uploads to Codecov
+
+**2. Quick PR Check (`.github/workflows/pr-check.yml`)**
+- **Triggers:** Pull Requests to `main`
+- **Purpose:** Fast feedback for PR authors
+- **Steps:**
+  1. Lint, type check, build
+  2. Run all tests
+  3. Comment on PR with status
+
+### Running CI Locally
+
+Before pushing, you can run the same checks locally:
+
+```bash
+# Run all checks (like CI)
+npm run lint && npm run typecheck && npm run build && npm test -- --run
+
+# Run full test suite
+npm run test:all
+
+# Run tests with coverage
+npm run test:coverage
+```
+
+### CI Status Checks
+
+All PRs must pass these checks before merge:
+- ✅ Linting passes
+- ✅ Type checking passes
+- ✅ Build succeeds
+- ✅ All tests pass on all platforms
+- ✅ Code coverage maintained
+
 ## 🧪 Testing
 
 ### Writing Tests
@@ -398,10 +456,28 @@ How to test these changes
 
 ### PR Review Process
 
-1. Automated checks will run (tests, linting, type checking)
+1. **Automated CI checks will run:**
+   - **Quick PR Check** (runs first for fast feedback):
+     - Code linting
+     - TypeScript type checking
+     - Build verification
+     - Unit and integration tests
+   - **Full CI Matrix** (comprehensive testing):
+     - Tests on Ubuntu, Windows, and macOS
+     - Tests on Node.js 18, 20, and 22
+     - E2E tests with Playwright (Ubuntu + Node 20)
+     - Code coverage report
+
+   All tests must pass before merge. The CI automatically:
+   - Installs dependencies
+   - Builds the project
+   - Runs all tests across multiple platforms
+   - Uploads test results if failures occur
+   - Reports coverage to Codecov
+
 2. Maintainers will review your code
 3. Address any feedback
-4. Once approved, your PR will be merged
+4. Once approved and all CI checks pass, your PR will be merged
 
 ## 🔌 Creating Plugins
 

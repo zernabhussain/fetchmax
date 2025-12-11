@@ -7,6 +7,7 @@
 *Lightweight core, powerful plugins. Built on native fetch API.*
 
 [![npm version](https://img.shields.io/npm/v/@fetchmax/core.svg)](https://www.npmjs.com/package/@fetchmax/core)
+[![CI](https://github.com/fetchmax/fetchmax/actions/workflows/ci.yml/badge.svg)](https://github.com/fetchmax/fetchmax/actions/workflows/ci.yml)
 [![License: MIT](https://img.shields.io/badge/License-MIT-yellow.svg)](https://opensource.org/licenses/MIT)
 [![TypeScript](https://img.shields.io/badge/TypeScript-Ready-blue.svg)](https://www.typescriptlang.org/)
 [![Tests](https://img.shields.io/badge/tests-372%20passing-brightgreen.svg)](https://github.com/fetchmax/fetchmax)
