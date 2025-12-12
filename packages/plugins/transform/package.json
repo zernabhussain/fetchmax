@@ -1,6 +1,6 @@
 {
   "name": "@fetchmax/plugin-transform",
-  "version": "1.0.0",
+  "version": "1.0.1",
   "description": "Data transformation plugin for FetchMax to transform request and response data",
   "type": "module",
   "main": "./dist/index.js",
@@ -13,9 +13,9 @@
       "require": "./dist/index.cjs"
     }
   },
+  
   "files": [
-    "dist",
-    "README.md"
+    "dist"
   ],
   "scripts": {
     "build": "tsup src/index.ts --format cjs,esm --dts --clean",
@@ -33,13 +33,13 @@
   "license": "MIT",
   "repository": {
     "type": "git",
-    "url": "https://github.com/fetchmax/fetchmax.git",
+    "url": "https://github.com/zernabhussain/fetchmax.git",
     "directory": "packages/plugins/transform"
   },
   "bugs": {
-    "url": "https://github.com/fetchmax/fetchmax/issues"
+    "url": "https://github.com/zernabhussain/fetchmax/issues"
   },
-  "homepage": "https://github.com/fetchmax/fetchmax#readme",
+  "homepage": "https://github.com/zernabhussain/fetchmax#readme",
   "sideEffects": false,
   "publishConfig": {
     "access": "public"

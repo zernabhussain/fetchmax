@@ -7,10 +7,10 @@
 *Lightweight core, powerful plugins. Built on native fetch API.*
 
 [![npm version](https://img.shields.io/npm/v/@fetchmax/core.svg)](https://www.npmjs.com/package/@fetchmax/core)
-[![CI](https://github.com/fetchmax/fetchmax/actions/workflows/ci.yml/badge.svg)](https://github.com/fetchmax/fetchmax/actions/workflows/ci.yml)
+[![CI](https://github.com/zernabhussain/fetchmax/actions/workflows/ci.yml/badge.svg)](https://github.com/zernabhussain/fetchmax/actions/workflows/ci.yml)
 [![License: MIT](https://img.shields.io/badge/License-MIT-yellow.svg)](https://opensource.org/licenses/MIT)
 [![TypeScript](https://img.shields.io/badge/TypeScript-Ready-blue.svg)](https://www.typescriptlang.org/)
-[![Tests](https://img.shields.io/badge/tests-372%20passing-brightgreen.svg)](https://github.com/fetchmax/fetchmax)
+[![Tests](https://img.shields.io/badge/tests-372%20passing-brightgreen.svg)](https://github.com/zernabhussain/fetchmax)
 
 </div>
 
@@ -960,7 +960,7 @@ Contributions are welcome! Here's how to get started:
 
 ```bash
 # Clone the repo
-git clone https://github.com/fetchmax/fetchmax.git
+git clone https://github.com/zernabhussain/fetchmax.git
 cd fetchmax
 
 # Install dependencies
@@ -997,6 +997,6 @@ Built with:
 
 Made with ❤️ by the FetchMax community
 
-[Documentation](https://fetchmax.dev) • [npm](https://www.npmjs.com/org/fetchmax) • [GitHub](https://github.com/fetchmax/fetchmax) • [Issues](https://github.com/fetchmax/fetchmax/issues)
+[Documentation](https://fetchmax.dev) • [npm](https://www.npmjs.com/org/fetchmax) • [GitHub](https://github.com/zernabhussain/fetchmax) • [Issues](https://github.com/zernabhussain/fetchmax/issues)
 
 </div>

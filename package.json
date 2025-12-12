@@ -1,6 +1,6 @@
 {
   "name": "fetchmax-monorepo",
-  "version": "1.0.0",
+  "version": "1.0.1",
   "private": true,
   "description": "The ultimate universal HTTP client for JavaScript and TypeScript",
   "type": "module",
@@ -79,12 +79,12 @@
   "license": "MIT",
   "repository": {
     "type": "git",
-    "url": "https://github.com/fetchmax/fetchmax.git"
+    "url": "https://github.com/zernabhussain/fetchmax.git"
   },
   "bugs": {
-    "url": "https://github.com/fetchmax/fetchmax/issues"
+    "url": "https://github.com/zernabhussain/fetchmax/issues"
   },
-  "homepage": "https://fetchmax.dev",
+  "homepage": "https://github.com/zernabhussain/fetchmax#readme",
   "engines": {
     "node": ">=18.0.0"
   },
