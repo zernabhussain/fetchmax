@@ -181,13 +181,13 @@ describe('Interceptors Plugin', () => {
 
       interceptors.response.use((response) => {
         callOrder.push(1);
-        (response.data as any).value *= 2;
+        response.data.value *= 2;
         return response;
       });
 
       interceptors.response.use((response) => {
         callOrder.push(2);
-        (response.data as any).value += 10;
+        response.data.value += 10;
         return response;
       });
 
@@ -208,7 +208,7 @@ describe('Interceptors Plugin', () => {
 
       interceptors.response.use(async (response) => {
         await new Promise(resolve => setTimeout(resolve, 10));
-        (response.data as any).processed = true;
+        response.data.processed = true;
         return response;
       });
 
@@ -253,12 +253,12 @@ describe('Interceptors Plugin', () => {
       const client = new HttpClient().use(interceptors);
 
       interceptors.response.use((response) => {
-        (response.data as any).interceptor1 = true;
+        response.data.interceptor1 = true;
         return response;
       });
 
       interceptors.response.use((response) => {
-        (response.data as any).interceptor2 = true;
+        response.data.interceptor2 = true;
         return response;
       });
 
@@ -498,7 +498,7 @@ describe('Interceptors Plugin', () => {
 
       interceptors.response.use((response) => {
         log.push('response interceptor');
-        (response.data as any).processed = true;
+        response.data.processed = true;
         return response;
       });
 
