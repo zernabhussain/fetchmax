@@ -17,7 +17,12 @@ export default defineConfig({
         '**/types.ts',
         'benchmarks/',
         'scripts/',
-        'examples/'
+        'examples/',
+        // Exclude config files
+        '*.config.ts',
+        '*.config.js',
+        '*.config.cjs',
+        '*.config.mjs'
       ],
       thresholds: {
         lines: 90,
