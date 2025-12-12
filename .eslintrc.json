@@ -22,6 +22,7 @@
       }
     ],
     "@typescript-eslint/no-explicit-any": "warn",
+    "@typescript-eslint/no-redundant-type-constituents": "error",
     "@typescript-eslint/explicit-module-boundary-types": "off",
     "@typescript-eslint/no-non-null-assertion": "warn",
     "no-console": "off",
