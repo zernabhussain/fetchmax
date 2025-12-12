@@ -6,6 +6,24 @@ export type ErrorInterceptor = (error: HttpError) => any;
 
 export type InterceptorEject = () => void;
 
+export interface InterceptorPlugin extends Plugin {
+  request: {
+    use: (interceptor: RequestInterceptor) => InterceptorEject;
+    eject: (interceptor: RequestInterceptor) => void;
+    clear: () => void;
+  };
+  response: {
+    use: (interceptor: ResponseInterceptor) => InterceptorEject;
+    eject: (interceptor: ResponseInterceptor) => void;
+    clear: () => void;
+  };
+  error: {
+    use: (interceptor: ErrorInterceptor) => InterceptorEject;
+    eject: (interceptor: ErrorInterceptor) => void;
+    clear: () => void;
+  };
+}
+
 /**
  * Interceptors Plugin
  *
@@ -41,28 +59,12 @@ export type InterceptorEject = () => void;
  * });
  * ```
  */
-export function interceptorPlugin(): Plugin & {
-  request: {
-    use: (interceptor: RequestInterceptor) => InterceptorEject;
-    eject: (interceptor: RequestInterceptor) => void;
-    clear: () => void;
-  };
-  response: {
-    use: (interceptor: ResponseInterceptor) => InterceptorEject;
-    eject: (interceptor: ResponseInterceptor) => void;
-    clear: () => void;
-  };
-  error: {
-    use: (interceptor: ErrorInterceptor) => InterceptorEject;
-    eject: (interceptor: ErrorInterceptor) => void;
-    clear: () => void;
-  };
-} {
+export function interceptorPlugin(): InterceptorPlugin {
   const requestInterceptors: RequestInterceptor[] = [];
   const responseInterceptors: ResponseInterceptor[] = [];
   const errorInterceptors: ErrorInterceptor[] = [];
 
-  const plugin: any = {
+  const plugin: InterceptorPlugin = {
     name: 'interceptors',
 
     /**

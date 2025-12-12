@@ -31,6 +31,13 @@ interface CacheStats {
   hitRate: number;
 }
 
+export interface CachePlugin extends Plugin {
+  clear: () => void;
+  invalidate: (pattern: string | RegExp) => void;
+  getStats: () => CacheStats;
+  getEntry: (key: string) => CacheEntry | undefined;
+}
+
 /**
  * Cache Plugin
  *
@@ -52,12 +59,7 @@ interface CacheStats {
  * cache.invalidate('/api/users');
  * ```
  */
-export function cachePlugin(config: CacheConfig = {}): Plugin & {
-  clear: () => void;
-  invalidate: (pattern: string | RegExp) => void;
-  getStats: () => CacheStats;
-  getEntry: (key: string) => CacheEntry | undefined;
-} {
+export function cachePlugin(config: CacheConfig = {}): CachePlugin {
   const {
     ttl = 5 * 60 * 1000, // 5 minutes
     maxSize = 100,
@@ -160,12 +162,7 @@ export function cachePlugin(config: CacheConfig = {}): Plugin & {
     setInterval(cleanExpired, Math.min(ttl, 60000)); // Clean every minute or TTL, whichever is smaller
   }
 
-  const plugin: Plugin & {
-    clear: () => void;
-    invalidate: (pattern: string | RegExp) => void;
-    getStats: () => CacheStats;
-    getEntry: (key: string) => CacheEntry | undefined;
-  } = {
+  const plugin: CachePlugin = {
     name: 'cache',
 
     async onRequest(request: any, _context: PluginContext) {

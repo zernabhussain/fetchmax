@@ -27,6 +27,15 @@ export class RateLimitError extends Error {
   }
 }
 
+export interface RateLimitPlugin extends Plugin {
+  getStats: () => {
+    requestCount: number;
+    queueSize: number;
+    timestamps: number[];
+  };
+  reset: () => void;
+}
+
 /**
  * Rate Limit Plugin
  *
@@ -48,14 +57,7 @@ export class RateLimitError extends Error {
  * }));
  * ```
  */
-export function rateLimitPlugin(config: RateLimitConfig): Plugin & {
-  getStats: () => {
-    requestCount: number;
-    queueSize: number;
-    timestamps: number[];
-  };
-  reset: () => void;
-} {
+export function rateLimitPlugin(config: RateLimitConfig): RateLimitPlugin {
   const {
     maxRequests,
     perMilliseconds,
@@ -203,14 +205,7 @@ export function rateLimitPlugin(config: RateLimitConfig): Plugin & {
     return promise;
   }
 
-  const plugin: Plugin & {
-    getStats: () => {
-      requestCount: number;
-      queueSize: number;
-      timestamps: number[];
-    };
-    reset: () => void;
-  } = {
+  const plugin: RateLimitPlugin = {
     name: 'rate-limit',
 
     async onRequest(request: any, _context: PluginContext) {

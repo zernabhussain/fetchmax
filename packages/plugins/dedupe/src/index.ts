@@ -1,5 +1,9 @@
 import type { Plugin, PluginContext, HttpResponse } from '@fetchmax/core';
 
+export interface DedupePlugin extends Plugin {
+  clear: () => void;
+}
+
 function getCacheKey(request: any): string {
   const method = request.method?.toUpperCase() || 'GET';
   const url = request.url || '';
@@ -7,7 +11,7 @@ function getCacheKey(request: any): string {
   return `${method}:${url}:${params}`;
 }
 
-export function dedupePlugin(): Plugin & { clear: () => void } {
+export function dedupePlugin(): DedupePlugin {
   const pendingRequests = new Map<string, {
     promise: Promise<HttpResponse>;
     resolve: (value: HttpResponse) => void;
@@ -15,7 +19,7 @@ export function dedupePlugin(): Plugin & { clear: () => void } {
     wasUsed: boolean;
   }>();
 
-  const plugin: any = {
+  const plugin: DedupePlugin = {
     name: 'dedupe',
 
     async onRequest(request: any, _context: PluginContext) {
