@@ -1,4 +1,4 @@
-import { describe, it, expect, beforeEach, vi } from 'vitest';
+import { describe, it, expect, vi } from 'vitest';
 import { HttpClient } from '@fetchmax/core';
 import { interceptorPlugin } from '@fetchmax/plugin-interceptors';
 import { http } from 'msw';
@@ -550,7 +550,7 @@ describe('Interceptors Plugin', () => {
       const interceptors = interceptorPlugin();
       const client = new HttpClient().use(interceptors);
 
-      let token = 'initial-token';
+      const token = 'initial-token';
 
       interceptors.request.use((config) => {
         config.headers = {
@@ -565,12 +565,12 @@ describe('Interceptors Plugin', () => {
     });
 
     it('should implement token refresh on 401', async () => {
-      let requestCount = 0;
+      let _requestCount = 0;
       let currentToken = 'expired-token';
 
       server.use(
         http.get('https://api.test.com/data', ({ request }) => {
-          requestCount++;
+          _requestCount++;
           const auth = request.headers.get('Authorization');
 
           if (auth === 'Bearer expired-token') {

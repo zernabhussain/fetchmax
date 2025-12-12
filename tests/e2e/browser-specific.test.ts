@@ -1,4 +1,4 @@
-import { test, expect } from '@playwright/test';
+import { describe, it, expect } from 'vitest';
 import { HttpClient, AbortError } from '@fetchmax/core';
 
 /**
@@ -8,8 +8,8 @@ import { HttpClient, AbortError } from '@fetchmax/core';
  * like CORS, credentials, and browser-specific APIs.
  */
 
-test.describe('Browser-Specific Features', () => {
-  test('should handle CORS requests', async () => {
+describe('Browser-Specific Features', () => {
+  it('should handle CORS requests', async () => {
     const client = new HttpClient({
       baseURL: 'https://api.github.com'
     });
@@ -20,7 +20,7 @@ test.describe('Browser-Specific Features', () => {
     expect(response.data).toBeDefined();
   });
 
-  test('should work with credentials mode', async () => {
+  it('should work with credentials mode', async () => {
     const client = new HttpClient({
       baseURL: 'https://jsonplaceholder.typicode.com',
       credentials: 'same-origin'
@@ -32,7 +32,7 @@ test.describe('Browser-Specific Features', () => {
     expect(response.data).toBeDefined();
   });
 
-  test('should work with different cache modes', async () => {
+  it('should work with different cache modes', async () => {
     const client = new HttpClient({
       baseURL: 'https://jsonplaceholder.typicode.com',
       cache: 'no-cache'
@@ -44,7 +44,7 @@ test.describe('Browser-Specific Features', () => {
     expect(response.data).toBeDefined();
   });
 
-  test('should work with AbortController - pre-aborted signal', async () => {
+  it('should work with AbortController - pre-aborted signal', async () => {
     const controller = new AbortController();
 
     const client = new HttpClient({
@@ -59,7 +59,7 @@ test.describe('Browser-Specific Features', () => {
       await client.get('/posts/1', {
         signal: controller.signal
       });
-      expect.fail('Should have thrown an abort error');
+      throw new Error('Should have thrown an abort error');
     } catch (error: any) {
       expect(error).toBeDefined();
       // FetchMax wraps native abort errors in its own AbortError class
@@ -73,7 +73,7 @@ test.describe('Browser-Specific Features', () => {
     }
   });
 
-  test('should work with AbortController - abort during request', async () => {
+  it('should work with AbortController - abort during request', async () => {
     const controller = new AbortController();
 
     const client = new HttpClient({
@@ -109,7 +109,7 @@ test.describe('Browser-Specific Features', () => {
     }
   });
 
-  test('should handle concurrent requests', async () => {
+  it('should handle concurrent requests', async () => {
     const client = new HttpClient({
       baseURL: 'https://jsonplaceholder.typicode.com'
     });
@@ -131,7 +131,7 @@ test.describe('Browser-Specific Features', () => {
     });
   });
 
-  test('should work with different response types in browser', async () => {
+  it('should work with different response types in browser', async () => {
     const client = new HttpClient({
       baseURL: 'https://jsonplaceholder.typicode.com'
     });
@@ -155,7 +155,7 @@ test.describe('Browser-Specific Features', () => {
     expect(blobResponse.data).toBeInstanceOf(Blob);
   });
 
-  test('should handle custom headers', async () => {
+  it('should handle custom headers', async () => {
     const client = new HttpClient({
       baseURL: 'https://api.github.com',
       headers: {
@@ -170,7 +170,7 @@ test.describe('Browser-Specific Features', () => {
     expect(response.headers).toBeDefined();
   });
 
-  test('should work across all browser types', async ({ browserName }) => {
+  it('should work across all browser types', async () => {
     const client = new HttpClient({
       baseURL: 'https://jsonplaceholder.typicode.com'
     });
@@ -180,12 +180,9 @@ test.describe('Browser-Specific Features', () => {
     expect(response.status).toBe(200);
     expect(response.data).toBeDefined();
     expect(response.data.id).toBe(1);
-
-    // Log which browser this test ran on
-    console.log(`Test passed on ${browserName}`);
   });
 
-  test('should maintain referrer policy', async () => {
+  it('should maintain referrer policy', async () => {
     const client = new HttpClient({
       baseURL: 'https://jsonplaceholder.typicode.com',
       referrerPolicy: 'no-referrer'
@@ -197,7 +194,7 @@ test.describe('Browser-Specific Features', () => {
     expect(response.data).toBeDefined();
   });
 
-  test('should work with redirect modes', async () => {
+  it('should work with redirect modes', async () => {
     const client = new HttpClient({
       baseURL: 'https://jsonplaceholder.typicode.com',
       redirect: 'follow'

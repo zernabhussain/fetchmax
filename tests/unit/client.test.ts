@@ -1,5 +1,5 @@
-import { describe, it, expect, beforeEach, vi } from 'vitest';
-import { HttpClient, createClient, HttpError, NetworkError, RequestError, ServerError } from '@fetchmax/core';
+import { describe, it, expect, vi } from 'vitest';
+import { HttpClient, createClient, RequestError, ServerError } from '@fetchmax/core';
 import { http } from 'msw';
 import { server } from '../setup';
 
@@ -176,7 +176,7 @@ describe('HttpClient', () => {
     it('should make a successful POST request with JSON body', async () => {
       server.use(
         http.post('https://api.test.com/users', async ({ request }) => {
-          const body = await request.json();
+          const body = await request.json() as Record<string, any>;
           expect(body).toEqual({ name: 'Alice', age: 30 });
           return Response.json({ id: 1, ...body }, { status: 201 });
         })
@@ -209,7 +209,7 @@ describe('HttpClient', () => {
     it('should make a successful PUT request', async () => {
       server.use(
         http.put('https://api.test.com/users/1', async ({ request }) => {
-          const body = await request.json();
+          const body = await request.json() as Record<string, any>;
           return Response.json({ id: 1, ...body });
         })
       );
@@ -243,8 +243,8 @@ describe('HttpClient', () => {
     it('should make a successful PATCH request', async () => {
       server.use(
         http.patch('https://api.test.com/users/1', async ({ request }) => {
-          const body = await request.json();
-          return Response.json({ id: 1, email: body.email });
+          const body = await request.json() as Record<string, any> | null;
+          return Response.json({ id: 1, email: body?.email });
         })
       );
 
@@ -404,7 +404,7 @@ describe('HttpClient', () => {
     });
 
     it('should call onError hook', async () => {
-      const onError = vi.fn((error, request, context) => {
+      const onError = vi.fn((error, _request, _context) => {
         throw error;
       });
 
@@ -766,7 +766,7 @@ describe('HttpClient', () => {
           context.requestTime = Date.now();
           return config;
         },
-        onResponse: (response: any, config: any, context: any) => {
+        onResponse: (response: any, _config: any, context: any) => {
           // Verify context was shared from onRequest
           contextChecked = true;
           expect(context.requestTime).toBeDefined();
@@ -796,7 +796,7 @@ describe('HttpClient', () => {
           context.id = Math.random();
           return config;
         },
-        onResponse: (response: any, config: any, context: any) => {
+        onResponse: (response: any, _config: any, context: any) => {
           contexts.push({ ...context });
           return response;
         }

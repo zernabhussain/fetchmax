@@ -68,7 +68,7 @@ export interface HttpError extends Error {
   /** HTTP status text (if available) */
   statusText?: string;
   /** Response data (if available) */
-  data?: any;
+  data?: unknown;
   /** Request configuration */
   config?: RequestConfig;
   /** Original Response object (if available) */
@@ -76,7 +76,16 @@ export interface HttpError extends Error {
   /** Error code */
   code?: string;
   /** Convert error to JSON (avoiding circular references) */
-  toJSON(): any;
+  toJSON(): {
+    name: string;
+    message: string;
+    status: number | undefined;
+    statusText: string | undefined;
+    data: unknown;
+    code: string | undefined;
+    config: { url: string | undefined; method: HttpMethod | undefined; baseURL: string | undefined } | undefined;
+    response: { status: number; statusText: string; ok: boolean; url: string } | undefined;
+  };
 }
 
 /**

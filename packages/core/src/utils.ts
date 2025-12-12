@@ -50,10 +50,11 @@ export function mergeConfig(...configs: (RequestConfig | undefined)[]): RequestC
         // Merge headers
         result.headers = {
           ...result.headers,
-          ...value
+          ...value as Record<string, string>
         };
       } else if (value !== undefined) {
-        (result as any)[key] = value;
+        // Use Record type for dynamic property assignment
+        (result as Record<string, unknown>)[key] = value;
       }
     });
   });
@@ -64,17 +65,22 @@ export function mergeConfig(...configs: (RequestConfig | undefined)[]): RequestC
 /**
  * Determines if a value is a plain object
  */
-export function isPlainObject(value: any): boolean {
+export function isPlainObject(value: unknown): boolean {
   if (typeof value !== 'object' || value === null) return false;
 
-  const prototype = Object.getPrototypeOf(value);
+  // After the checks above, we know value is a non-null object
+  // eslint-disable-next-line @typescript-eslint/no-unsafe-assignment
+  const prototype = Object.getPrototypeOf(value as Record<string, unknown>);
   return prototype === null || prototype === Object.prototype;
 }
 
 /**
  * Prepares request body based on content type
  */
-export function prepareBody(body: any, headers: Record<string, string> = {}): any {
+export function prepareBody(
+  body: unknown,
+  headers: Record<string, string> = {}
+): BodyInit | null | undefined {
   if (!body) return undefined;
 
   // If body is already a string, FormData, Blob, etc., return as-is
@@ -98,13 +104,19 @@ export function prepareBody(body: any, headers: Record<string, string> = {}): an
     return JSON.stringify(body);
   }
 
-  return body;
+  // If Content-Type is already set, return body as-is
+  if (contentType) {
+    return body as BodyInit;
+  }
+
+  // For other types, stringify as JSON
+  return JSON.stringify(body);
 }
 
 /**
  * Parses response based on content type
  */
-export async function parseResponse(response: Response, responseType?: string): Promise<any> {
+export async function parseResponse(response: Response, responseType?: string): Promise<unknown> {
   // Check for empty response (common with HEAD, DELETE, OPTIONS requests)
   const contentLength = response.headers.get('content-length');
   if (contentLength === '0') {
@@ -137,7 +149,7 @@ export async function parseResponse(response: Response, responseType?: string): 
     // Handle empty response
     if (!text || text.trim() === '') return null;
     try {
-      return JSON.parse(text);
+      return JSON.parse(text) as unknown;
     } catch (e) {
       return text;
     }
@@ -163,7 +175,7 @@ export async function parseResponse(response: Response, responseType?: string): 
 
   // Try to parse as JSON if not empty
   try {
-    return JSON.parse(text);
+    return JSON.parse(text) as unknown;
   } catch (e) {
     // If JSON parsing fails, return the text
     return text;
@@ -175,23 +187,32 @@ export async function parseResponse(response: Response, responseType?: string): 
  */
 export function deepClone<T>(obj: T): T {
   if (obj === null || typeof obj !== 'object') return obj;
-  if (obj instanceof Date) return new Date(obj.getTime()) as any;
-  if (obj instanceof Array) return obj.map(item => deepClone(item)) as any;
-  if (obj instanceof Set) return new Set(Array.from(obj).map(item => deepClone(item))) as any;
+  if (obj instanceof Date) return new Date(obj.getTime()) as T;
+  if (obj instanceof Array) {
+    // eslint-disable-next-line @typescript-eslint/no-unsafe-return
+    const cloned: unknown[] = obj.map(item => deepClone(item));
+    return cloned as unknown as T;
+  }
+  if (obj instanceof Set) {
+    // eslint-disable-next-line @typescript-eslint/no-unsafe-return
+    const cloned: Set<unknown> = new Set(Array.from(obj).map(item => deepClone(item)));
+    return cloned as unknown as T;
+  }
   if (obj instanceof Map) {
     return new Map(
       Array.from(obj.entries()).map(([key, value]) => [key, deepClone(value)])
-    ) as any;
+    ) as T;
   }
 
   if (typeof obj === 'object') {
-    const clonedObj: any = {};
+    const clonedObj: Record<string, unknown> = {};
     for (const key in obj) {
-      if (obj.hasOwnProperty(key)) {
-        clonedObj[key] = deepClone((obj as any)[key]);
+      if (Object.prototype.hasOwnProperty.call(obj, key)) {
+        const objAsRecord = obj as Record<string, unknown>;
+        clonedObj[key] = deepClone(objAsRecord[key]);
       }
     }
-    return clonedObj;
+    return clonedObj as T;
   }
 
   return obj;

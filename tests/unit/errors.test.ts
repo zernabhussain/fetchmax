@@ -324,7 +324,7 @@ describe('Errors', () => {
       const error = createHttpError(response, { error: 'test' }, mockConfig);
 
       expect(error.response).toBe(response);
-      expect(error.response.status).toBe(500);
+      expect(error.response?.status).toBe(500);
     });
   });
 

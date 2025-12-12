@@ -1,8 +1,8 @@
 import type { Plugin, PluginContext, HttpResponse, HttpError } from '@fetchmax/core';
 
-export type RequestInterceptor = (config: any) => any | Promise<any>;
+export type RequestInterceptor = (config: any) => any;
 export type ResponseInterceptor = (response: HttpResponse) => HttpResponse | Promise<HttpResponse>;
-export type ErrorInterceptor = (error: HttpError) => any | Promise<any>;
+export type ErrorInterceptor = (error: HttpError) => any;
 
 export type InterceptorEject = () => void;
 

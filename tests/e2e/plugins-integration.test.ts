@@ -1,11 +1,11 @@
-import { test, expect } from '@playwright/test';
+import { describe, it, expect } from 'vitest';
 import { HttpClient } from '@fetchmax/core';
 import { retryPlugin } from '@fetchmax/plugin-retry';
 import { loggerPlugin } from '@fetchmax/plugin-logger';
 import { timeoutPlugin } from '@fetchmax/plugin-timeout';
 import { cachePlugin } from '@fetchmax/plugin-cache';
 import { interceptorPlugin } from '@fetchmax/plugin-interceptors';
-import { transformPlugin, transforms } from '@fetchmax/plugin-transform';
+import { transformPlugin } from '@fetchmax/plugin-transform';
 
 /**
  * E2E Tests - Plugin Integration
@@ -14,8 +14,8 @@ import { transformPlugin, transforms } from '@fetchmax/plugin-transform';
  * with real-world APIs and scenarios.
  */
 
-test.describe('Plugin Integration with Real APIs', () => {
-  test('should work with retry + logger plugins', async () => {
+describe('Plugin Integration with Real APIs', () => {
+  it('should work with retry + logger plugins', async () => {
     const logs: string[] = [];
 
     const client = new HttpClient({
@@ -39,7 +39,7 @@ test.describe('Plugin Integration with Real APIs', () => {
     expect(logs.length).toBeGreaterThan(0);
   });
 
-  test('should work with timeout + retry plugins', async () => {
+  it('should work with timeout + retry plugins', async () => {
     const client = new HttpClient({
       baseURL: 'https://jsonplaceholder.typicode.com'
     })
@@ -52,7 +52,7 @@ test.describe('Plugin Integration with Real APIs', () => {
     expect(response.data).toBeDefined();
   });
 
-  test('should work with cache plugin', async () => {
+  it('should work with cache plugin', async () => {
     const client = new HttpClient({
       baseURL: 'https://jsonplaceholder.typicode.com'
     }).use(cachePlugin({ ttl: 60000 }));
@@ -67,7 +67,7 @@ test.describe('Plugin Integration with Real APIs', () => {
     expect(response2.data).toEqual(response1.data);
   });
 
-  test('should work with interceptors plugin', async () => {
+  it('should work with interceptors plugin', async () => {
     let requestIntercepted = false;
     let responseIntercepted = false;
 
@@ -95,12 +95,12 @@ test.describe('Plugin Integration with Real APIs', () => {
     expect(responseIntercepted).toBe(true);
   });
 
-  test('should work with transform plugin', async () => {
+  it('should work with transform plugin', async () => {
     const client = new HttpClient({
       baseURL: 'https://jsonplaceholder.typicode.com'
     }).use(
       transformPlugin({
-        transformResponse: (data, headers) => {
+        transformResponse: (data, _headers) => {
           // Add a custom field to demonstrate transformation
           return {
             ...data,
@@ -118,7 +118,7 @@ test.describe('Plugin Integration with Real APIs', () => {
     expect(response.data.customField).toBe('E2E Test');
   });
 
-  test('should work with multiple plugins combined', async () => {
+  it('should work with multiple plugins combined', async () => {
     const logs: string[] = [];
 
     const client = new HttpClient({
@@ -158,7 +158,7 @@ test.describe('Plugin Integration with Real APIs', () => {
     expect(logs.length).toBeGreaterThan(0);
   });
 
-  test('should handle errors with multiple plugins', async () => {
+  it('should handle errors with multiple plugins', async () => {
     let errorIntercepted = false;
 
     const interceptors = interceptorPlugin();
@@ -176,7 +176,7 @@ test.describe('Plugin Integration with Real APIs', () => {
 
     try {
       await client.get('/posts/999999');
-      expect.fail('Should have thrown an error');
+      throw new Error('Should have thrown an error');
     } catch (error: any) {
       expect(error).toBeDefined();
       expect(error.status).toBe(404);
@@ -184,7 +184,7 @@ test.describe('Plugin Integration with Real APIs', () => {
     }
   });
 
-  test('should maintain interceptor order within a plugin', async () => {
+  it('should maintain interceptor order within a plugin', async () => {
     const executionOrder: string[] = [];
 
     const interceptors = interceptorPlugin();
@@ -209,9 +209,8 @@ test.describe('Plugin Integration with Real APIs', () => {
     expect(executionOrder).toEqual(['interceptor-1', 'interceptor-2']);
   });
 
-  test('should work with all plugins in real-world scenario', async () => {
+  it('should work with all plugins in real-world scenario', async () => {
     const logs: string[] = [];
-    let retryAttempts = 0;
 
     const interceptors = interceptorPlugin();
     interceptors.request.use((config) => {
@@ -227,10 +226,7 @@ test.describe('Plugin Integration with Real APIs', () => {
       .use(
         retryPlugin({
           maxRetries: 2,
-          retryDelay: 100,
-          onRetry: (attempt) => {
-            retryAttempts = attempt;
-          }
+          retryDelay: 100
         })
       )
       .use(cachePlugin({ ttl: 30000 }))

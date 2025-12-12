@@ -20,4 +20,4 @@ afterAll(() => {
 });
 
 // Add global test utilities
-global.sleep = (ms: number) => new Promise(resolve => setTimeout(resolve, ms));
+(global as any).sleep = (ms: number) => new Promise(resolve => setTimeout(resolve, ms));

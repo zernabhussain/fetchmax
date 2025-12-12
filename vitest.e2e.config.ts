@@ -1,44 +1,27 @@
 import { defineConfig } from 'vitest/config';
 import path from 'path';
 
+/**
+ * Vitest configuration for E2E tests
+ *
+ * These tests make real HTTP requests to external APIs and should be run separately from unit tests.
+ * They require network access and may be slower/less reliable than unit tests.
+ *
+ * Run with: npm run test:e2e
+ */
 export default defineConfig({
   test: {
     globals: true,
-    environment: 'happy-dom',
-    coverage: {
-      provider: 'v8',
-      reporter: ['text', 'json', 'html', 'lcov'],
-      exclude: [
-        'node_modules/',
-        'dist/',
-        'tests/',
-        '**/*.test.ts',
-        '**/*.spec.ts',
-        '**/types.ts',
-        'benchmarks/',
-        'scripts/',
-        'examples/'
-      ],
-      thresholds: {
-        lines: 90,
-        functions: 90,
-        branches: 85,
-        statements: 90
-      }
-    },
-    setupFiles: ['./tests/setup.ts'],
-    include: ['tests/**/*.test.ts', 'packages/*/tests/**/*.test.ts'],
-    exclude: [
-      'node_modules/**',
-      // E2E tests make real API calls and should be run separately
-      // Use: npm run test:e2e
-      'tests/e2e/**/*.test.ts'
-    ],
-    testTimeout: 10000
+    // Use Node.js environment for real fetch support
+    environment: 'node',
+    include: ['tests/e2e/**/*.test.ts'],
+    testTimeout: 30000, // Longer timeout for real API calls
+    // Retry flaky tests (network issues)
+    retry: 1
   },
   resolve: {
     alias: {
-      // Test against source files (for development)
+      // Test against source files
       '@fetchmax/core': path.resolve(__dirname, './packages/core/src'),
       '@fetchmax/plugin-retry': path.resolve(__dirname, './packages/plugins/retry/src'),
       '@fetchmax/plugin-timeout': path.resolve(__dirname, './packages/plugins/timeout/src'),

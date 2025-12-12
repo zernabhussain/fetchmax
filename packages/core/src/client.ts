@@ -22,6 +22,20 @@ import {
 } from './utils';
 
 /**
+ * Internal request config with plugin-specific properties
+ * These properties are used internally by plugins and are not part of the public API
+ */
+interface InternalRequestConfig extends RequestConfig {
+  _retryContext?: PluginContext;
+  __mocked?: boolean;
+  __cached?: boolean;
+  __deduped?: boolean;
+  __mockData?: HttpResponse;
+  __cachedData?: HttpResponse;
+  __promise?: Promise<HttpResponse>;
+}
+
+/**
  * FetchMax HttpClient
  *
  * The core HTTP client with plugin support
@@ -50,11 +64,17 @@ export class HttpClient implements IHttpClient {
     // Copy plugin methods to client (except hooks)
     const hookNames = ['onRequest', 'onResponse', 'onError', 'name'];
     Object.keys(plugin).forEach(key => {
-      if (!hookNames.includes(key) && typeof (plugin as any)[key] === 'function') {
-        (this as any)[key] = (plugin as any)[key].bind(plugin);
+      const pluginValue: unknown = plugin[key];
+      if (!hookNames.includes(key) && typeof pluginValue === 'function') {
+        const pluginMethod = pluginValue as (...args: unknown[]) => unknown;
+        // Cast this to Record to allow dynamic method assignment
+        const client = this as unknown as Record<string, unknown>;
+
         // Inject 'this' reference to allow plugins to call client methods
-        if ((plugin as any)[key].length > 0) {
-          (this as any)[key] = (...args: any[]) => (plugin as any)[key].call(plugin, this, ...args);
+        if (pluginMethod.length > 0) {
+          client[key] = (...args: unknown[]) => pluginMethod.call(plugin, this, ...args);
+        } else {
+          client[key] = pluginMethod.bind(plugin);
         }
       }
     });
@@ -80,32 +100,32 @@ export class HttpClient implements IHttpClient {
    */
   async request<T = any>(config: RequestConfig): Promise<HttpResponse<T>> {
     // Merge with default config
-    const finalConfig = mergeConfig(this.config, config);
+    const finalConfig = mergeConfig(this.config, config) as InternalRequestConfig;
 
     // Create plugin context (or reuse existing one for retries)
-    const context: PluginContext = (finalConfig as any)._retryContext || {};
+    const context: PluginContext = finalConfig._retryContext || {};
 
     // Clean up the temporary _retryContext property
-    if ((finalConfig as any)._retryContext) {
-      delete (finalConfig as any)._retryContext;
+    if (finalConfig._retryContext) {
+      delete finalConfig._retryContext;
     }
 
     // Initialize requestConfig so it's in scope for catch block
-    let requestConfig = finalConfig;
+    let requestConfig: InternalRequestConfig = finalConfig;
 
     try {
       // Run onRequest hooks
-      requestConfig = await this.runRequestHooks(finalConfig, context);
+      requestConfig = await this.runRequestHooks(finalConfig, context) as InternalRequestConfig;
 
       // Check if plugin returned mocked/cached data
-      if ((requestConfig as any).__mocked || (requestConfig as any).__cached) {
-        const mockData = (requestConfig as any).__mockData || (requestConfig as any).__cachedData;
-        return mockData;
+      if (requestConfig.__mocked || requestConfig.__cached) {
+        const mockData = requestConfig.__mockData || requestConfig.__cachedData;
+        return mockData as HttpResponse<T>;
       }
 
       // Check if plugin deduped the request
-      if ((requestConfig as any).__deduped) {
-        return await (requestConfig as any).__promise;
+      if (requestConfig.__deduped && requestConfig.__promise) {
+        return await requestConfig.__promise as HttpResponse<T>;
       }
 
       // Build URL
@@ -115,7 +135,7 @@ export class HttpClient implements IHttpClient {
       const headers = { ...requestConfig.headers };
 
       // Prepare body
-      const body = prepareBody(requestConfig.body, headers);
+      const body: BodyInit | null | undefined = prepareBody(requestConfig.body, headers);
 
       // Create fetch options
       const fetchOptions: RequestInit = {
@@ -133,24 +153,27 @@ export class HttpClient implements IHttpClient {
       let response: Response;
       try {
         response = await fetch(url, fetchOptions);
-      } catch (error: any) {
+      } catch (error: unknown) {
         // Handle network errors
-        if (error && error.name === 'AbortError') {
+        if (error && typeof error === 'object' && 'name' in error && error.name === 'AbortError') {
           throw new AbortError('Request was aborted', requestConfig);
         }
-        throw new NetworkError(
-          error?.message || 'Network request failed',
-          requestConfig
-        );
+        const errorMessage = error && typeof error === 'object' && 'message' in error
+          ? String(error.message)
+          : 'Network request failed';
+        throw new NetworkError(errorMessage, requestConfig);
       }
 
       // Parse response
-      let data: any;
+      let data: T;
       try {
-        data = await parseResponse(response, requestConfig.responseType);
-      } catch (error: any) {
+        data = await parseResponse(response, requestConfig.responseType) as T;
+      } catch (error: unknown) {
+        const errorMessage = error && typeof error === 'object' && 'message' in error
+          ? String(error.message)
+          : 'Unknown parse error';
         throw new ParseError(
-          'Failed to parse response: ' + error.message,
+          'Failed to parse response: ' + errorMessage,
           undefined,
           requestConfig
         );
@@ -175,9 +198,10 @@ export class HttpClient implements IHttpClient {
       const finalResponse = await this.runResponseHooks(httpResponse, requestConfig, context);
 
       return finalResponse;
-    } catch (error: any) {
+    } catch (error: unknown) {
       // Run onError hooks
-      const result = await this.runErrorHooks(error, requestConfig, context);
+      const httpError = error instanceof Error ? error as HttpError : new Error(String(error)) as HttpError;
+      const result = await this.runErrorHooks(httpError, requestConfig, context);
 
       // If result is an Error instance, throw it
       if (result instanceof Error) {
@@ -257,18 +281,22 @@ export class HttpClient implements IHttpClient {
     error: HttpError,
     config: RequestConfig,
     context: PluginContext
-  ): Promise<any> {
+  ): Promise<HttpError | HttpResponse> {
     let currentError = error;
 
     for (const plugin of this.plugins) {
       if (plugin.onError) {
         try {
-          const result = await plugin.onError(currentError, config, context);
+          const result: unknown = await plugin.onError(currentError, config, context);
 
           // Check if plugin wants to retry
-          if (result && result.retry) {
-            // Pass the context through to preserve retry state
-            return this.request({ ...config, _retryContext: context } as any);
+          if (result && typeof result === 'object' && 'retry' in result) {
+            const retryResult = result as { retry?: boolean };
+            if (retryResult.retry) {
+              // Pass the context through to preserve retry state
+              const retryConfig: InternalRequestConfig = { ...config, _retryContext: context };
+              return this.request(retryConfig);
+            }
           }
 
           // Check if plugin returned a valid response (e.g., from offline queue)
@@ -282,11 +310,11 @@ export class HttpClient implements IHttpClient {
             'config' in result &&
             !('code' in result) // Errors have a 'code' property, responses don't
           ) {
-            return result;
+            return result as HttpResponse;
           }
-        } catch (pluginError: any) {
+        } catch (pluginError: unknown) {
           // Plugin error - don't log to avoid interfering with plugin logging
-          currentError = pluginError;
+          currentError = pluginError instanceof Error ? pluginError as HttpError : new Error(String(pluginError)) as HttpError;
         }
       }
     }
@@ -300,31 +328,31 @@ export class HttpClient implements IHttpClient {
    */
 
   async get<T = any>(url: string, config?: RequestConfig): Promise<HttpResponse<T>> {
-    return this.request<T>({ ...config, url, method: 'GET' });
+    return this.request<T>({ ...(config || {}), url, method: 'GET' });
   }
 
-  async post<T = any>(url: string, data?: any, config?: RequestConfig): Promise<HttpResponse<T>> {
-    return this.request<T>({ ...config, url, method: 'POST', body: data });
+  async post<T = any>(url: string, data?: unknown, config?: RequestConfig): Promise<HttpResponse<T>> {
+    return this.request<T>({ ...(config || {}), url, method: 'POST', body: data });
   }
 
-  async put<T = any>(url: string, data?: any, config?: RequestConfig): Promise<HttpResponse<T>> {
-    return this.request<T>({ ...config, url, method: 'PUT', body: data });
+  async put<T = any>(url: string, data?: unknown, config?: RequestConfig): Promise<HttpResponse<T>> {
+    return this.request<T>({ ...(config || {}), url, method: 'PUT', body: data });
   }
 
   async delete<T = any>(url: string, config?: RequestConfig): Promise<HttpResponse<T>> {
-    return this.request<T>({ ...config, url, method: 'DELETE' });
+    return this.request<T>({ ...(config || {}), url, method: 'DELETE' });
   }
 
-  async patch<T = any>(url: string, data?: any, config?: RequestConfig): Promise<HttpResponse<T>> {
-    return this.request<T>({ ...config, url, method: 'PATCH', body: data });
+  async patch<T = any>(url: string, data?: unknown, config?: RequestConfig): Promise<HttpResponse<T>> {
+    return this.request<T>({ ...(config || {}), url, method: 'PATCH', body: data });
   }
 
   async head<T = any>(url: string, config?: RequestConfig): Promise<HttpResponse<T>> {
-    return this.request<T>({ ...config, url, method: 'HEAD' });
+    return this.request<T>({ ...(config || {}), url, method: 'HEAD' });
   }
 
   async options<T = any>(url: string, config?: RequestConfig): Promise<HttpResponse<T>> {
-    return this.request<T>({ ...config, url, method: 'OPTIONS' });
+    return this.request<T>({ ...(config || {}), url, method: 'OPTIONS' });
   }
 }
 

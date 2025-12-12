@@ -1,7 +1,5 @@
 #!/usr/bin/env -S deno run --allow-read --allow-run --allow-env
 
-import { join } from "https://deno.land/std@0.208.0/path/mod.ts";
-
 console.log("==========================================");
 console.log("Deno Runtime Testing");
 console.log("==========================================");

@@ -1,5 +1,3 @@
-import { getRuntimeInfo } from './platform-detector';
-
 export interface TestRunResult {
   platform: string;
   version: string;

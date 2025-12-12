@@ -270,7 +270,7 @@ describe('Transform Plugin', () => {
     it('should use both request and response transforms', async () => {
       server.use(
         http.post('https://api.test.com/users', async ({ request }) => {
-          const body = await request.json();
+          const body = await request.json() as Record<string, any>;
           return Response.json({
             user_id: 1,
             ...body

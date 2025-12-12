@@ -32,6 +32,6 @@
     "allowSyntheticDefaultImports": true,
     "types": ["vitest/globals", "node"]
   },
-  "include": ["packages/*/src/**/*", "tests/**/*"],
-  "exclude": ["node_modules", "dist", "**/dist"]
+  "include": ["packages/**/src/**/*", "tests/unit/**/*", "tests/integration/**/*", "tests/setup.ts"],
+  "exclude": ["node_modules", "dist", "**/dist", "tests/e2e/**/*", "tests/platforms/**/*"]
 }

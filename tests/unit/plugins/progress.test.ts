@@ -1,4 +1,4 @@
-import { describe, it, expect, vi } from 'vitest';
+import { describe, it, expect } from 'vitest';
 import { HttpClient } from '@fetchmax/core';
 import { progressPlugin, type ProgressEvent } from '@fetchmax/plugin-progress';
 import { http } from 'msw';
@@ -281,7 +281,7 @@ describe('Progress Plugin', () => {
 
       const client = new HttpClient().use(
         progressPlugin({
-          onDownloadProgress: (event) => {
+          onDownloadProgress: (_event) => {
             // Should not be called if no body stream
           }
         })

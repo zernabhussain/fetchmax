@@ -486,13 +486,13 @@ describe('Logger Plugin', () => {
         groupEnd: () => {}
       };
 
-      const client = new HttpClient().use(
+      new HttpClient().use(
         loggerPlugin({ logger: mockLogger })
       );
 
       // This should not crash even with minimal config
       expect(() => {
-        const plugin = loggerPlugin({ logger: mockLogger });
+        loggerPlugin({ logger: mockLogger });
         // Simulate plugin hooks with minimal data
       }).not.toThrow();
     });

@@ -235,7 +235,7 @@ describe('Retry Plugin', () => {
         })
       );
 
-      const onRetry = vi.fn((attempt, error, delay) => {
+      const onRetry = vi.fn((_attempt, _error, delay) => {
         delays.push(delay);
       });
 
@@ -273,7 +273,7 @@ describe('Retry Plugin', () => {
         })
       );
 
-      const onRetry = vi.fn((attempt, error, delay) => {
+      const onRetry = vi.fn((_attempt, _error, delay) => {
         delays.push(delay);
       });
 
@@ -502,11 +502,11 @@ describe('Retry Plugin', () => {
     });
 
     it('should handle timeout during retry', async () => {
-      let attempts = 0;
+      let _attempts = 0;
 
       server.use(
         http.get('https://api.test.com/test', async () => {
-          attempts++;
+          _attempts++;
           await new Promise(resolve => setTimeout(resolve, 100));
           return new Response(null, { status: 500 });
         })
@@ -630,8 +630,8 @@ describe('Retry Plugin', () => {
     });
 
     it('should reset context for new requests', async () => {
-      let firstRetries: number[] = [];
-      let secondRetries: number[] = [];
+      const firstRetries: number[] = [];
+      const secondRetries: number[] = [];
       let isFirstRequest = true;
 
       const onRetry = vi.fn((attempt) => {

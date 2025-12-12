@@ -6,7 +6,7 @@ import type { RequestConfig, HttpError as IHttpError } from './types';
 export class HttpError extends Error implements IHttpError {
   public status?: number;
   public statusText?: string;
-  public data?: any;
+  public data?: unknown;
   public config?: RequestConfig;
   public response?: Response;
   public code?: string;
@@ -15,7 +15,7 @@ export class HttpError extends Error implements IHttpError {
     message: string,
     status?: number,
     statusText?: string,
-    data?: any,
+    data?: unknown,
     config?: RequestConfig,
     response?: Response
   ) {
@@ -102,7 +102,7 @@ export class RequestError extends HttpError {
     message: string,
     status: number,
     statusText: string,
-    data?: any,
+    data?: unknown,
     config?: RequestConfig,
     response?: Response
   ) {
@@ -120,7 +120,7 @@ export class ServerError extends HttpError {
     message: string,
     status: number,
     statusText: string,
-    data?: any,
+    data?: unknown,
     config?: RequestConfig,
     response?: Response
   ) {
@@ -134,7 +134,7 @@ export class ServerError extends HttpError {
  * Parse Error - thrown when response parsing fails
  */
 export class ParseError extends HttpError {
-  constructor(message: string, data?: any, config?: RequestConfig) {
+  constructor(message: string, data?: unknown, config?: RequestConfig) {
     super(message, undefined, undefined, data, config);
     this.name = 'ParseError';
     this.code = 'PARSE_ERROR';
@@ -146,7 +146,7 @@ export class ParseError extends HttpError {
  */
 export function createHttpError(
   response: Response,
-  data: any,
+  data: unknown,
   config: RequestConfig
 ): HttpError {
   const status = response.status;

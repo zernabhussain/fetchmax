@@ -17,8 +17,8 @@ afterAll(() => {
   console.log('[Deno Setup] MSW server closed');
 });
 
-// @ts-ignore - Deno global
+// @ts-expect-error - Deno global
 (globalThis as any).sleep = (ms: number) => new Promise(resolve => setTimeout(resolve, ms));
 
-// @ts-ignore - Deno global
+// @ts-expect-error - Deno global
 console.log(`[Deno Setup] Testing on Deno ${(globalThis as any).Deno?.version?.deno || 'unknown'}`);

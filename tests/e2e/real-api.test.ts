@@ -1,4 +1,4 @@
-import { test, expect } from '@playwright/test';
+import { describe, it, expect } from 'vitest';
 import { HttpClient } from '@fetchmax/core';
 
 /**
@@ -10,8 +10,8 @@ import { HttpClient } from '@fetchmax/core';
  * - Network resilience
  */
 
-test.describe('Real API Integration', () => {
-  test('should fetch from GitHub API', async () => {
+describe('Real API Integration', () => {
+  it('should fetch from GitHub API', async () => {
     const client = new HttpClient({
       baseURL: 'https://api.github.com'
     });
@@ -24,7 +24,7 @@ test.describe('Real API Integration', () => {
     expect(response.data.type).toBe('User');
   });
 
-  test('should fetch from JSONPlaceholder API', async () => {
+  it('should fetch from JSONPlaceholder API', async () => {
     const client = new HttpClient({
       baseURL: 'https://jsonplaceholder.typicode.com'
     });
@@ -39,7 +39,7 @@ test.describe('Real API Integration', () => {
     expect(typeof response.data.completed).toBe('boolean');
   });
 
-  test('should handle POST requests to real API', async () => {
+  it('should handle POST requests to real API', async () => {
     const client = new HttpClient({
       baseURL: 'https://jsonplaceholder.typicode.com'
     });
@@ -57,7 +57,7 @@ test.describe('Real API Integration', () => {
     expect(response.data.id).toBeDefined();
   });
 
-  test('should handle query parameters with real API', async () => {
+  it('should handle query parameters with real API', async () => {
     const client = new HttpClient({
       baseURL: 'https://jsonplaceholder.typicode.com'
     });
@@ -76,21 +76,21 @@ test.describe('Real API Integration', () => {
     expect(response.data.every((post: any) => post.userId === 1)).toBe(true);
   });
 
-  test('should handle 404 errors from real API', async () => {
+  it('should handle 404 errors from real API', async () => {
     const client = new HttpClient({
       baseURL: 'https://jsonplaceholder.typicode.com'
     });
 
     try {
       await client.get('/posts/999999');
-      expect.fail('Should have thrown an error');
+      throw new Error('Should have thrown an error');
     } catch (error: any) {
       expect(error).toBeDefined();
       expect(error.status).toBe(404);
     }
   });
 
-  test('should work with different HTTP methods', async () => {
+  it('should work with different HTTP methods', async () => {
     const client = new HttpClient({
       baseURL: 'https://jsonplaceholder.typicode.com'
     });
@@ -119,7 +119,7 @@ test.describe('Real API Integration', () => {
     expect(deleteResponse.status).toBe(200);
   });
 
-  test('should handle headers correctly', async () => {
+  it('should handle headers correctly', async () => {
     const client = new HttpClient({
       baseURL: 'https://api.github.com',
       headers: {
@@ -135,7 +135,7 @@ test.describe('Real API Integration', () => {
     expect(response.data).toBeDefined();
   });
 
-  test('should work with response types', async () => {
+  it('should work with response types', async () => {
     const client = new HttpClient({
       baseURL: 'https://jsonplaceholder.typicode.com'
     });
