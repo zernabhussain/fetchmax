@@ -54,6 +54,7 @@ export default defineConfig({
       '@fetchmax/plugin-progress': path.resolve(__dirname, './packages/plugins/progress/src'),
       '@fetchmax/plugin-rate-limit': path.resolve(__dirname, './packages/plugins/rate-limit/src'),
       '@fetchmax/plugin-transform': path.resolve(__dirname, './packages/plugins/transform/src'),
+      '@fetchmax/plugin-ai-agent': path.resolve(__dirname, './packages/plugins/ai-agent/src'),
       '@fetchmax/plugins': path.resolve(__dirname, './packages/plugins')
     }
   }
