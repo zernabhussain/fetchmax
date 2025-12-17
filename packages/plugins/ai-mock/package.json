@@ -1,0 +1,66 @@
+{
+  "name": "@fetchmax/plugin-ai-mock",
+  "version": "0.1.0-alpha.0",
+  "description": "AI-powered mock data generator for FetchMax - generate realistic API responses using AI",
+  "type": "module",
+  "main": "./dist/index.js",
+  "module": "./dist/index.js",
+  "types": "./dist/index.d.ts",
+  "exports": {
+    ".": {
+      "types": "./dist/index.d.ts",
+      "import": "./dist/index.js",
+      "require": "./dist/index.cjs"
+    }
+  },
+
+  "files": [
+    "dist"
+  ],
+  "scripts": {
+    "build": "tsup src/index.ts --format cjs,esm --dts --clean",
+    "dev": "tsup src/index.ts --format cjs,esm --dts --watch"
+  },
+  "keywords": [
+    "fetchmax",
+    "plugin",
+    "ai",
+    "mock",
+    "mock-data",
+    "testing",
+    "development",
+    "openai",
+    "anthropic",
+    "fake-data",
+    "fixtures"
+  ],
+  "author": "FetchMax Contributors",
+  "license": "MIT",
+  "repository": {
+    "type": "git",
+    "url": "https://github.com/zernabhussain/fetchmax.git",
+    "directory": "packages/plugins/ai-mock"
+  },
+  "bugs": {
+    "url": "https://github.com/zernabhussain/fetchmax/issues"
+  },
+  "homepage": "https://github.com/zernabhussain/fetchmax#readme",
+  "sideEffects": false,
+  "publishConfig": {
+    "access": "public",
+    "tag": "alpha"
+  },
+  "engines": {
+    "node": ">=18.0.0"
+  },
+  "peerDependencies": {
+    "@fetchmax/core": "^1.0.0",
+    "@fetchmax/plugin-ai-agent": "^0.1.0-alpha"
+  },
+  "devDependencies": {
+    "@fetchmax/core": "*",
+    "@fetchmax/plugin-ai-agent": "*",
+    "tsup": "^8.0.1",
+    "typescript": "^5.3.3"
+  }
+}

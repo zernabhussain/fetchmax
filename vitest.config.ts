@@ -55,6 +55,10 @@ export default defineConfig({
       '@fetchmax/plugin-rate-limit': path.resolve(__dirname, './packages/plugins/rate-limit/src'),
       '@fetchmax/plugin-transform': path.resolve(__dirname, './packages/plugins/transform/src'),
       '@fetchmax/plugin-ai-agent': path.resolve(__dirname, './packages/plugins/ai-agent/src'),
+      '@fetchmax/plugin-ai-mock': path.resolve(__dirname, './packages/plugins/ai-mock/src'),
+      '@fetchmax/plugin-ai-translate': path.resolve(__dirname, './packages/plugins/ai-translate/src'),
+      '@fetchmax/plugin-ai-summarize': path.resolve(__dirname, './packages/plugins/ai-summarize/src'),
+      '@fetchmax/plugin-ai-transform': path.resolve(__dirname, './packages/plugins/ai-transform/src'),
       '@fetchmax/plugins': path.resolve(__dirname, './packages/plugins')
     }
   }

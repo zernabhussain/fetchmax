@@ -1,0 +1,44 @@
+{
+  "name": "@fetchmax/plugin-ai-translate",
+  "version": "0.1.0-alpha.0",
+  "description": "AI-powered translation plugin for FetchMax",
+  "keywords": [
+    "fetchmax",
+    "plugin",
+    "translation",
+    "i18n",
+    "ai"
+  ],
+  "author": "FetchMax Team",
+  "license": "MIT",
+  "type": "module",
+  "main": "dist/index.cjs",
+  "module": "dist/index.js",
+  "types": "dist/index.d.ts",
+  "exports": {
+    ".": {
+      "import": "./dist/index.js",
+      "require": "./dist/index.cjs",
+      "types": "./dist/index.d.ts"
+    }
+  },
+  "files": [
+    "dist",
+    "README.md"
+  ],
+  "scripts": {
+    "build": "tsup src/index.ts --format cjs,esm --dts --clean",
+    "dev": "tsup src/index.ts --format cjs,esm --dts --watch",
+    "test": "vitest",
+    "lint": "eslint src --ext ts",
+    "typecheck": "tsc --noEmit"
+  },
+  "peerDependencies": {
+    "@fetchmax/core": "^1.0.0",
+    "@fetchmax/plugin-ai-agent": "^0.1.0-alpha.0"
+  },
+  "devDependencies": {
+    "@fetchmax/core": "workspace:*",
+    "@fetchmax/plugin-ai-agent": "workspace:*"
+  }
+}
