@@ -1,6 +1,6 @@
 {
   "name": "@fetchmax/plugin-interceptors",
-  "version": "1.0.1",
+  "version": "1.0.0",
   "description": "Interceptors plugin for FetchMax to modify requests and responses globally",
   "type": "module",
   "main": "./dist/index.js",

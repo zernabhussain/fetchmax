@@ -69,6 +69,9 @@ export interface AITranslateConfig {
 
   /** Only translate responses from specific endpoints */
   endpoints?: string[] | RegExp[];
+
+  /** AI Agent instance (for dependency injection in tests) */
+  aiAgent?: any;
 }
 
 /**

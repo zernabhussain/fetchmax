@@ -80,9 +80,10 @@ export function aiTransformPlugin(config: AITransformConfig): Plugin {
     rule: TransformRule,
     context: PluginContext
   ): Promise<any> {
-    const client = context.client;
+    // Support dependency injection for testing
+    const aiAgent = config.aiAgent || context.client?.aiAgent;
 
-    if (!client || !client.aiAgent) {
+    if (!aiAgent) {
       throw new AIAgentNotFoundError();
     }
 
@@ -110,7 +111,7 @@ export function aiTransformPlugin(config: AITransformConfig): Plugin {
 
       // Apply transformation
       const prompt = `${rule.prompt}\n\nInput data:\n${inputStr}\n\nReturn only the transformed data as valid JSON.`;
-      const result = await client.aiAgent.askJSON(prompt);
+      const result = await aiAgent.askJSON(prompt);
 
       // Cache the result
       if (cacheEnabled) {

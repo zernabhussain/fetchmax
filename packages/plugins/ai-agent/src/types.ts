@@ -35,6 +35,26 @@ export interface AIModelConfig {
 }
 
 /**
+ * Model pricing per 1K tokens (in USD)
+ */
+export interface ModelPricing {
+  /** Cost per 1K input tokens */
+  input: number;
+  /** Cost per 1K output tokens */
+  output: number;
+}
+
+/**
+ * Custom pricing configuration
+ * Allows users to override default pricing when providers change rates
+ */
+export interface CustomPricing {
+  [provider: string]: {
+    [model: string]: ModelPricing;
+  };
+}
+
+/**
  * Cost tracking configuration
  */
 export interface CostTrackingConfig {
@@ -48,6 +68,17 @@ export interface CostTrackingConfig {
   onBudgetWarning?: (spent: number, limit: number) => void;
   /** Callback when budget limit is exceeded */
   onBudgetExceeded?: (spent: number, limit: number) => void;
+  /**
+   * Custom pricing for models (overrides built-in pricing)
+   * Use this when providers change their pricing
+   * @example
+   * customPricing: {
+   *   openai: {
+   *     'gpt-4o-mini': { input: 0.00020, output: 0.00080 }
+   *   }
+   * }
+   */
+  customPricing?: CustomPricing;
 }
 
 /**
@@ -142,4 +173,12 @@ export interface CostStats {
   remainingBudget?: number;
   /** Average cost per request */
   averageCost: number;
+  /** Request count (alias for totalRequests, used in tests) */
+  requestCount?: number;
+  /** Requests (alias for totalRequests, used in demos) */
+  requests?: number;
+  /** Per-provider statistics */
+  providers?: Record<string, { cost: number; requests: number }>;
+  /** Per-model statistics */
+  models?: Record<string, { cost: number; requests: number }>;
 }

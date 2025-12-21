@@ -370,8 +370,8 @@ describe('Utils', () => {
       const response = new Response('{"invalid": json}', {
         headers: { 'Content-Type': 'application/json' }
       });
-      const result = await parseResponse(response);
-      expect(result).toBe('{"invalid": json}');
+      // Should throw error for malformed JSON with application/json content-type
+      await expect(parseResponse(response)).rejects.toThrow('Failed to parse JSON response');
     });
   });
 

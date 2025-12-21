@@ -1,6 +1,6 @@
 {
   "name": "@fetchmax/plugin-ai-agent",
-  "version": "0.1.0-alpha.0",
+  "version": "1.0.0",
   "description": "AI Agent connection plugin for FetchMax - unified interface for OpenAI, Anthropic, DeepSeek, and more",
   "type": "module",
   "main": "./dist/index.js",
@@ -50,8 +50,7 @@
   "homepage": "https://github.com/zernabhussain/fetchmax#readme",
   "sideEffects": false,
   "publishConfig": {
-    "access": "public",
-    "tag": "alpha"
+    "access": "public"
   },
   "engines": {
     "node": ">=18.0.0"

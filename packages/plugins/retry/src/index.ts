@@ -46,6 +46,11 @@ export function retryPlugin(config: RetryConfig = {}): Plugin {
     name: 'retry',
 
     async onError(error: HttpError, request: any, context: PluginContext) {
+      // Check if request has been aborted
+      if (request.signal && request.signal.aborted) {
+        throw error;
+      }
+
       // Get current retry attempt
       const attempt = context.retryCount || 0;
 
@@ -101,8 +106,38 @@ export function retryPlugin(config: RetryConfig = {}): Plugin {
         );
       }
 
-      // Wait before retrying
-      await new Promise(resolve => setTimeout(resolve, delayMs));
+      // Wait before retrying, but check for abort signal
+      await new Promise<void>((resolve, reject) => {
+        // Declare abortListener before use
+        let abortListener: (() => void) | undefined;
+
+        const timeoutId = setTimeout(() => {
+          if (abortListener && request.signal) {
+            request.signal.removeEventListener('abort', abortListener);
+          }
+          resolve();
+        }, delayMs);
+
+        // Listen for abort during delay
+        if (request.signal && typeof request.signal.addEventListener === 'function') {
+          abortListener = () => {
+            clearTimeout(timeoutId);
+            const abortError: any = new Error('Request aborted during retry delay');
+            abortError.name = 'AbortError';
+            abortError.code = 'ABORT_ERROR';
+            reject(abortError);
+          };
+          request.signal.addEventListener('abort', abortListener);
+        }
+      });
+
+      // Check again if aborted after delay
+      if (request.signal && request.signal.aborted) {
+        const abortError: any = new Error('Request aborted');
+        abortError.name = 'AbortError';
+        abortError.code = 'ABORT_ERROR';
+        throw abortError;
+      }
 
       // Increment retry count in context
       context.retryCount = attempt + 1;

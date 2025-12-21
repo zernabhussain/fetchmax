@@ -51,8 +51,9 @@ try {
     exit 1
 }
 
-# List of all plugins
+# List of all plugins (9 core + 5 AI = 14 total)
 $plugins = @(
+    # Core Plugins (9)
     "retry",
     "cache",
     "interceptors",
@@ -61,8 +62,14 @@ $plugins = @(
     "dedupe",
     "rate-limit",
     "transform",
-    "progress"
-    # Uncomment these when ready:
+    "progress",
+    # AI Plugins (5) - Production Ready v1.0.0
+    "ai-agent",
+    "ai-mock",
+    "ai-translate",
+    "ai-summarize",
+    "ai-transform"
+    # Future Plugins (uncomment when ready):
     # "graphql",
     # "offline-queue",
     # "websocket"

@@ -1,6 +1,6 @@
 {
   "name": "@fetchmax/plugin-dedupe",
-  "version": "1.0.1",
+  "version": "1.0.0",
   "description": "Deduplication plugin for FetchMax to prevent duplicate simultaneous requests",
   "type": "module",
   "main": "./dist/index.js",

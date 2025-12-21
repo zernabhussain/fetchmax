@@ -151,7 +151,8 @@ export async function parseResponse(response: Response, responseType?: string): 
     try {
       return JSON.parse(text) as unknown;
     } catch (e) {
-      return text;
+      // Throw error for malformed JSON with application/json content-type
+      throw new Error(`Failed to parse JSON response: ${e instanceof Error ? e.message : 'Invalid JSON'}`);
     }
   }
 

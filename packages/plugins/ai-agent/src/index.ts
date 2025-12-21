@@ -91,10 +91,35 @@ export function aiAgentPlugin(config: AIAgentConfig): Plugin {
       // Check rate limit
       await rateLimiter.waitForLimit();
 
-      // Make request
-      const response = await provider.askJSON<T>(prompt, schema, options);
+      // Enhance prompt to request JSON
+      const enhancedPrompt = schema
+        ? `${prompt}\n\nRespond with valid JSON matching this structure: ${JSON.stringify(schema)}`
+        : `${prompt}\n\nRespond with valid JSON only.`;
 
-      return response;
+      // Use ask() to get full response with usage tracking
+      const response = await provider.ask(enhancedPrompt, {
+        ...options,
+        responseFormat: 'json'
+      });
+
+      // Track cost
+      if (response.usage) {
+        const cost = response.cost || 0;
+        costTracker.record(
+          response.usage.promptTokens,
+          response.usage.completionTokens,
+          cost
+        );
+        rateLimiter.record(response.usage.totalTokens);
+      }
+
+      // Parse and return JSON
+      try {
+        return JSON.parse(response.content) as T;
+      } catch (error) {
+        // If parsing fails, return as-is (might already be parsed)
+        return response.content as T;
+      }
     },
 
     /**
@@ -230,12 +255,15 @@ function createProvider(config: AIAgentConfig): AIProviderInterface {
 
 /**
  * Create cost tracker instance
+ * Cost tracking is DISABLED by default - only enabled if explicitly configured
  */
 function createCostTracker(config: AIAgentConfig): CostTracker {
-  if (config.costTracking === false) {
+  // If no costTracking config provided, disable it
+  if (!config.costTracking) {
     return new CostTracker({ enabled: false });
   }
 
+  // If costTracking is provided (boolean true or object), enable it
   const costConfig: CostTrackingConfig =
     typeof config.costTracking === 'object'
       ? { enabled: true, ...config.costTracking }

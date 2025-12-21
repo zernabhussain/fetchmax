@@ -51,6 +51,9 @@ export interface AISummarizeConfig {
 
   /** Enable debug logging */
   debug?: boolean;
+
+  /** AI Agent instance (for dependency injection in tests) */
+  aiAgent?: any;
 }
 
 /**

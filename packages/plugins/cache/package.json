@@ -1,6 +1,6 @@
 {
   "name": "@fetchmax/plugin-cache",
-  "version": "1.0.1",
+  "version": "1.0.0",
   "description": "Cache plugin for FetchMax with TTL and custom storage adapters",
   "type": "module",
   "main": "./dist/index.js",

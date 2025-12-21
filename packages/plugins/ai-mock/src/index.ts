@@ -82,7 +82,7 @@ export function aiMockPlugin(config: AIMockConfig): Plugin {
   ): MockEndpointConfig | null {
     for (const [pattern, endpointConfig] of Object.entries(config.endpoints)) {
       if (matchesPattern(url, pattern)) {
-        // Check if config has method-specific configuration
+        // Check if config has direct endpoint configuration (not method-specific)
         if ('method' in endpointConfig || 'structure' in endpointConfig) {
           // Direct config
           const cfg = endpointConfig as MockEndpointConfig;
@@ -113,10 +113,11 @@ export function aiMockPlugin(config: AIMockConfig): Plugin {
     method: HttpMethod,
     context: PluginContext
   ): Promise<any> {
-    const client = context.client;
+    // Support dependency injection for testing
+    const aiAgent = config.aiAgent || context.client?.aiAgent;
 
     // Check if AI Agent plugin is available
-    if (!client || !client.aiAgent) {
+    if (!aiAgent) {
       throw new AIAgentNotFoundError();
     }
 
@@ -124,15 +125,15 @@ export function aiMockPlugin(config: AIMockConfig): Plugin {
 
     try {
       // Build prompt
-      let prompt = PromptBuilder.buildPrompt(endpointConfig, url, method);
+      const prompt = PromptBuilder.buildPrompt(endpointConfig, url, method);
 
       // Add global instructions
-      if (config.globalInstructions) {
-        prompt += `\n\nGlobal requirements: ${config.globalInstructions}`;
-      }
+      const fullPrompt = config.globalInstructions
+        ? `${prompt}\n\nGlobal requirements: ${config.globalInstructions}`
+        : prompt;
 
       // Generate mock data using AI Agent
-      const mockData = await client.aiAgent.askJSON(prompt);
+      const mockData = await aiAgent.askJSON(fullPrompt);
 
       const generationTime = Date.now() - startTime;
       totalGenerationTime += generationTime;

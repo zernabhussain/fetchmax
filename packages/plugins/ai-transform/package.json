@@ -1,6 +1,6 @@
 {
   "name": "@fetchmax/plugin-ai-transform",
-  "version": "0.1.0-alpha.0",
+  "version": "1.0.0",
   "description": "AI-powered data transformation plugin for FetchMax",
   "keywords": [
     "fetchmax",
@@ -34,7 +34,7 @@
   },
   "peerDependencies": {
     "@fetchmax/core": "^1.0.0",
-    "@fetchmax/plugin-ai-agent": "^0.1.0-alpha.0"
+    "@fetchmax/plugin-ai-agent": "^1.0.0"
   },
   "devDependencies": {
     "@fetchmax/core": "workspace:*",

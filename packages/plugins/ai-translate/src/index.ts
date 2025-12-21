@@ -110,7 +110,8 @@ export function aiTranslatePlugin(config: AITranslateConfig): Plugin {
             text,
             targetLanguages,
             config.sourceLanguage,
-            context
+            context,
+            config.aiAgent
           );
 
           // Cache the translation

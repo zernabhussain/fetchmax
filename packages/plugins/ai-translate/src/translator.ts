@@ -13,12 +13,14 @@ export class Translator {
     text: string,
     targetLanguages: Language[],
     sourceLanguage: Language | undefined,
-    context: PluginContext
+    context: PluginContext,
+    aiAgent?: any
   ): Promise<Record<Language, string>> {
-    const client = context.client;
+    // Support dependency injection for testing
+    const agent = aiAgent || context.client?.aiAgent;
 
     // Check if AI Agent plugin is available
-    if (!client || !client.aiAgent) {
+    if (!agent) {
       throw new AIAgentNotFoundError();
     }
 
@@ -27,7 +29,7 @@ export class Translator {
       const prompt = this.buildTranslationPrompt(text, targetLanguages, sourceLanguage);
 
       // Get translations from AI
-      const result = await client.aiAgent.askJSON(prompt);
+      const result = await agent.askJSON(prompt);
 
       // Validate result
       if (typeof result !== 'object' || result === null) {

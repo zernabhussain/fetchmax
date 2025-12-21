@@ -103,9 +103,10 @@ export function aiSummarizePlugin(config: AISummarizeConfig = {}): Plugin {
    * Summarize text using AI
    */
   async function summarizeText(text: string, context: PluginContext): Promise<string> {
-    const client = context.client;
+    // Support dependency injection for testing
+    const aiAgent = config.aiAgent || context.client?.aiAgent;
 
-    if (!client || !client.aiAgent) {
+    if (!aiAgent) {
       throw new AIAgentNotFoundError();
     }
 
@@ -121,7 +122,7 @@ export function aiSummarizePlugin(config: AISummarizeConfig = {}): Plugin {
 
     try {
       const prompt = buildSummaryPrompt(text, config.length, config.style, config.instructions);
-      const summary = await client.aiAgent.ask(prompt);
+      const summary = await aiAgent.ask(prompt);
 
       // Cache the summary
       if (config.cache !== false) {
