@@ -69,9 +69,9 @@ $plugins = @(
     "ai-translate",
     "ai-summarize",
     "ai-transform"
-    # Future Plugins (uncomment when ready):
-    # "graphql",
-    # "offline-queue",
+    # Future Plugins (commented out - not ready):
+    # "graphql"
+    # "offline-queue"
     # "websocket"
 )
 
