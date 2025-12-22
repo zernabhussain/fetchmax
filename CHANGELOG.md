@@ -2,6 +2,40 @@
 
 All notable changes to this project will be documented in this file.
 
+## [1.0.2] - 2025-12-22
+
+### Changed
+
+**Version Updates**:
+- Updated all packages from v1.0.0 to v1.0.2
+- `@fetchmax/core`: v1.0.0 → v1.0.2
+- All 14 plugins: v1.0.0 → v1.0.2
+
+### Packages Updated
+
+**Core**:
+- `@fetchmax/core` - v1.0.2
+
+**Core Plugins** (9 plugins):
+- `@fetchmax/plugin-retry` - v1.0.2
+- `@fetchmax/plugin-cache` - v1.0.2
+- `@fetchmax/plugin-interceptors` - v1.0.2
+- `@fetchmax/plugin-timeout` - v1.0.2
+- `@fetchmax/plugin-logger` - v1.0.2
+- `@fetchmax/plugin-rate-limit` - v1.0.2
+- `@fetchmax/plugin-progress` - v1.0.2
+- `@fetchmax/plugin-dedupe` - v1.0.2
+- `@fetchmax/plugin-transform` - v1.0.2
+
+**AI Plugins** (5 plugins):
+- `@fetchmax/plugin-ai-agent` - v1.0.2
+- `@fetchmax/plugin-ai-mock` - v1.0.2
+- `@fetchmax/plugin-ai-translate` - v1.0.2
+- `@fetchmax/plugin-ai-summarize` - v1.0.2
+- `@fetchmax/plugin-ai-transform` - v1.0.2
+
+---
+
 ## [1.0.0] - 2025-12-20
 
 ### 🎉 Production Release - FetchMax v1.0.0
