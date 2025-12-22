@@ -1,8 +1,19 @@
 /**
  * Field type definitions for mock data structure
- * Allows both predefined types and custom type strings
  */
-export type FieldType = string;
+/* eslint-disable @typescript-eslint/no-redundant-type-constituents */
+export type FieldType =
+  | 'string'
+  | 'number'
+  | 'boolean'
+  | 'date'
+  | 'email'
+  | 'url'
+  | 'uuid'
+  | 'array'
+  | 'object'
+  | string; // Allow custom types like 'admin | user | guest'
+/* eslint-enable @typescript-eslint/no-redundant-type-constituents */
 
 /**
  * Structure definition for a mock response field

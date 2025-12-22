@@ -1,8 +1,22 @@
 /**
  * Supported languages for translation
- * Allows both predefined language codes and custom codes
  */
-export type Language = string;
+/* eslint-disable @typescript-eslint/no-redundant-type-constituents */
+export type Language =
+  | 'en' // English
+  | 'es' // Spanish
+  | 'fr' // French
+  | 'de' // German
+  | 'it' // Italian
+  | 'pt' // Portuguese
+  | 'ru' // Russian
+  | 'ja' // Japanese
+  | 'ko' // Korean
+  | 'zh' // Chinese
+  | 'ar' // Arabic
+  | 'hi' // Hindi
+  | string; // Allow custom language codes
+/* eslint-enable @typescript-eslint/no-redundant-type-constituents */
 
 /**
  * Translation strategy

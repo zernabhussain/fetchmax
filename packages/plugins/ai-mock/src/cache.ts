@@ -19,7 +19,8 @@ export class MockCache {
   /**
    * Get cached mock if available and not expired
    */
-  get(endpoint: string, method: string): any {
+  /* eslint-disable @typescript-eslint/no-redundant-type-constituents */
+  get(endpoint: string, method: string): any | null {
     const key = this.getCacheKey(endpoint, method);
     const cached = this.cache.get(key);
 
@@ -38,6 +39,7 @@ export class MockCache {
     cached.hits++;
     return cached.data;
   }
+  /* eslint-enable @typescript-eslint/no-redundant-type-constituents */
 
   /**
    * Store mock in cache
