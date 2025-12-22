@@ -37,7 +37,7 @@
     "@fetchmax/plugin-ai-agent": "^1.0.0"
   },
   "devDependencies": {
-    "@fetchmax/core": "workspace:*",
-    "@fetchmax/plugin-ai-agent": "workspace:*"
+    "@fetchmax/core": "*",
+    "@fetchmax/plugin-ai-agent": "*"
   }
 }
