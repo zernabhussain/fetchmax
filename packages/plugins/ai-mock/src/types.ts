@@ -1,17 +1,8 @@
 /**
  * Field type definitions for mock data structure
+ * Allows both predefined types and custom type strings
  */
-export type FieldType =
-  | 'string'
-  | 'number'
-  | 'boolean'
-  | 'date'
-  | 'email'
-  | 'url'
-  | 'uuid'
-  | 'array'
-  | 'object'
-  | string; // Allow custom types like 'admin | user | guest'
+export type FieldType = string;
 
 /**
  * Structure definition for a mock response field

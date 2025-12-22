@@ -28,7 +28,7 @@ describe('Security: Prototype Pollution Prevention', () => {
     // Attempt to pollute prototype
     (maliciousConfig as any)['__proto__'] = { polluted: true };
 
-    const client2 = new HttpClient(maliciousConfig);
+    new HttpClient(maliciousConfig);
 
     // Verify prototype was not polluted
     const plainObject = {};
@@ -43,7 +43,7 @@ describe('Security: Prototype Pollution Prevention', () => {
       }
     };
 
-    const client2 = new HttpClient(maliciousConfig as any);
+    new HttpClient(maliciousConfig as any);
 
     // Verify prototype was not polluted
     const plainObject = {};

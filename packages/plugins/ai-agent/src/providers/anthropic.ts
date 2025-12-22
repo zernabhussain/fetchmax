@@ -116,7 +116,7 @@ export class AnthropicProvider extends BaseAIProvider {
     const reader = response.body.getReader();
     const decoder = new TextDecoder();
     let buffer = '';
-    let totalTokens = { prompt: 0, completion: 0 };
+    const totalTokens = { prompt: 0, completion: 0 };
 
     try {
       while (true) {

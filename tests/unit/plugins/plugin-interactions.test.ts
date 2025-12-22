@@ -7,8 +7,6 @@ import { describe, it, expect, beforeEach, vi } from 'vitest';
 import { HttpClient } from '@fetchmax/core';
 import { retryPlugin } from '@fetchmax/plugin-retry';
 import { cachePlugin } from '@fetchmax/plugin-cache';
-import { rateLimitPlugin } from '@fetchmax/plugin-rate-limit';
-import { timeoutPlugin } from '@fetchmax/plugin-timeout';
 import { transformPlugin } from '@fetchmax/plugin-transform';
 import { dedupePlugin } from '@fetchmax/plugin-dedupe';
 import { http, HttpResponse } from 'msw';
@@ -241,7 +239,7 @@ describe('Plugin Interactions: Dedupe + Cache', () => {
     });
 
     // Subsequent request should use cache
-    const response6 = await client.get('https://api.test.com/dedupe-cache');
+    await client.get('https://api.test.com/dedupe-cache');
     expect(requestCount).toBe(1); // Still 1 (cached)
   });
 

@@ -1,7 +1,6 @@
-import { describe, it, expect, vi } from 'vitest';
+import { describe, it, expect } from 'vitest';
 import {
   aiMockPlugin,
-  AIAgentNotFoundError,
   MockConfigError
 } from '@fetchmax/plugin-ai-mock';
 import type { AIMockConfig } from '@fetchmax/plugin-ai-mock';

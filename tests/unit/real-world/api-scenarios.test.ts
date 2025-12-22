@@ -158,7 +158,6 @@ describe('Real-World API Scenarios', () => {
       );
 
       const client = new HttpClient();
-      const startTime = Date.now();
 
       const promise = client.get('https://api.test.com/slow');
 
@@ -669,7 +668,7 @@ describe('Real-World API Scenarios', () => {
 
   describe('Concurrent Cart Updates (Race Conditions)', () => {
     it('should handle concurrent add-to-cart requests', async () => {
-      let cartItems: any[] = [];
+      const cartItems: any[] = [];
 
       server.use(
         http.post('https://api.test.com/cart/add', async ({ request }) => {
@@ -826,7 +825,7 @@ describe('Real-World API Scenarios', () => {
       const client = new HttpClient();
 
       // Fetch all pages
-      let allItems: any[] = [];
+      const allItems: any[] = [];
       let cursor: string | null = null;
 
       // Page 1

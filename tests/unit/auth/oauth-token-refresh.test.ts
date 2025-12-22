@@ -3,10 +3,9 @@
  * Tests for OAuth token refresh and authentication flows
  */
 
-import { describe, it, expect, beforeEach, vi } from 'vitest';
+import { describe, it, expect, beforeEach } from 'vitest';
 import { HttpClient } from '@fetchmax/core';
 import { interceptorPlugin } from '@fetchmax/plugin-interceptors';
-import { retryPlugin } from '@fetchmax/plugin-retry';
 import { http, HttpResponse } from 'msw';
 import { server } from '../../setup';
 
@@ -245,7 +244,7 @@ describe('OAuth: Token Refresh on 401', () => {
 
   it('should handle refresh token expiration', async () => {
     server.use(
-      http.post('https://api.test.com/auth/refresh', ({ request }) => {
+      http.post('https://api.test.com/auth/refresh', () => {
         return new Response('Refresh token expired', { status: 403 });
       }),
       http.get('https://api.test.com/data', () => {
@@ -266,19 +265,15 @@ describe('OAuth: Token Refresh on 401', () => {
       if (error.status === 401 && !error.config._tokenRefreshed) {
         error.config._tokenRefreshed = true;
 
-        try {
-          const refreshResponse = await fetch('https://api.test.com/auth/refresh', {
-            method: 'POST',
-            body: JSON.stringify({ refreshToken: 'old-refresh' })
-          });
+        const refreshResponse = await fetch('https://api.test.com/auth/refresh', {
+          method: 'POST',
+          body: JSON.stringify({ refreshToken: 'old-refresh' })
+        });
 
-          if (refreshResponse.status === 403) {
-            // Refresh token expired - logout user
-            logoutCalled = true;
-            throw new Error('Session expired - please log in again');
-          }
-        } catch (err: any) {
-          throw err;
+        if (refreshResponse.status === 403) {
+          // Refresh token expired - logout user
+          logoutCalled = true;
+          throw new Error('Session expired - please log in again');
         }
       }
 

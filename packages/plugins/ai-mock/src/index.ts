@@ -85,13 +85,13 @@ export function aiMockPlugin(config: AIMockConfig): Plugin {
         // Check if config has direct endpoint configuration (not method-specific)
         if ('method' in endpointConfig || 'structure' in endpointConfig) {
           // Direct config
-          const cfg = endpointConfig as MockEndpointConfig;
+          const cfg = endpointConfig;
           if (!cfg.method || cfg.method === method) {
             return cfg;
           }
         } else {
           // Method-specific config
-          const methodConfig = (endpointConfig as Record<HttpMethod, MockEndpointConfig>)[
+          const methodConfig = (endpointConfig)[
             method
           ];
           if (methodConfig) {

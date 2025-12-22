@@ -19,7 +19,7 @@ export class MockCache {
   /**
    * Get cached mock if available and not expired
    */
-  get(endpoint: string, method: string): any | null {
+  get(endpoint: string, method: string): any {
     const key = this.getCacheKey(endpoint, method);
     const cached = this.cache.get(key);
 

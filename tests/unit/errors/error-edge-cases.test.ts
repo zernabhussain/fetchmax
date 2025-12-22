@@ -7,7 +7,6 @@ import { describe, it, expect, beforeEach, vi } from 'vitest';
 import { HttpClient } from '@fetchmax/core';
 import { retryPlugin } from '@fetchmax/plugin-retry';
 import { cachePlugin } from '@fetchmax/plugin-cache';
-import { rateLimitPlugin } from '@fetchmax/plugin-rate-limit';
 import { http, HttpResponse } from 'msw';
 import { server } from '../../setup';
 

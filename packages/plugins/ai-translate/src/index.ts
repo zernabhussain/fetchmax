@@ -160,13 +160,14 @@ export function aiTranslatePlugin(config: AITranslateConfig): Plugin {
     strategy: TranslationStrategy
   ): void {
     switch (strategy) {
-      case 'replace':
+      case 'replace': {
         // Replace original with first target language
         const firstLang = targetLanguages[0];
         if (firstLang) {
           Translator.setNestedValue(data, path, translations[firstLang]);
         }
         break;
+      }
 
       case 'merge':
         // Add translations with language suffixes
@@ -181,7 +182,7 @@ export function aiTranslatePlugin(config: AITranslateConfig): Plugin {
         break;
 
       case 'separate':
-      default:
+      default: {
         // Add translations to a separate field
         const translationsField = config.translationsField || '_translations';
         if (!data[translationsField]) {
@@ -197,6 +198,7 @@ export function aiTranslatePlugin(config: AITranslateConfig): Plugin {
           data[translationsField][path].original = originalText;
         }
         break;
+      }
     }
   }
 

@@ -1,4 +1,4 @@
-import { describe, it, expect, beforeAll, afterAll, beforeEach, vi } from 'vitest';
+import { describe, it, expect, beforeAll, afterAll, beforeEach } from 'vitest';
 import { http, HttpResponse } from 'msw';
 import { setupServer } from 'msw/node';
 import { HttpClient } from '@fetchmax/core';
@@ -31,7 +31,7 @@ describe('Real-World: Browser Compatibility', () => {
   describe('Request Credentials', () => {
     it('should support credentials: include', async () => {
       server.use(
-        http.get('https://api.test.com/with-credentials', ({ request }) => {
+        http.get('https://api.test.com/with-credentials', () => {
           // In real browsers, credentials: 'include' sends cookies
           return HttpResponse.json({ credentialsMode: 'include' });
         })
@@ -82,7 +82,7 @@ describe('Real-World: Browser Compatibility', () => {
   describe('CORS Modes', () => {
     it('should support mode: cors', async () => {
       server.use(
-        http.get('https://api.test.com/cors', ({ request }) => {
+        http.get('https://api.test.com/cors', () => {
           return HttpResponse.json({ mode: 'cors' }, {
             headers: {
               'Access-Control-Allow-Origin': '*',
@@ -134,11 +134,8 @@ describe('Real-World: Browser Compatibility', () => {
     });
 
     it('should handle CORS preflight requests', async () => {
-      let preflightReceived = false;
-
       server.use(
         http.options('https://api.test.com/preflight', () => {
-          preflightReceived = true;
           return new Response(null, {
             status: 204,
             headers: {

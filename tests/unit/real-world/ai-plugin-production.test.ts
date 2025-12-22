@@ -13,13 +13,12 @@
  * - Cache invalidation strategies
  */
 
-import { describe, it, expect, vi, beforeEach, afterEach } from 'vitest';
+import { describe, it, expect, vi, beforeEach } from 'vitest';
 import { HttpClient } from '@fetchmax/core';
 import { aiAgentPlugin } from '@fetchmax/plugin-ai-agent';
 import type { AIAgentConfig } from '@fetchmax/plugin-ai-agent';
 import { aiTranslatePlugin } from '@fetchmax/plugin-ai-translate';
 import { aiSummarizePlugin } from '@fetchmax/plugin-ai-summarize';
-import { aiTransformPlugin } from '@fetchmax/plugin-ai-transform';
 import { http, HttpResponse } from 'msw';
 import { server } from '../../setup';
 
@@ -305,7 +304,7 @@ describe('AI Plugin Production Readiness', () => {
       const plugin = aiAgentPlugin(config);
 
       // Create conversation with many long messages
-      const longMessages = Array.from({ length: 100 }, (_, i) => ({
+      const longMessages = Array.from({ length: 100 }, () => ({
         role: 'user' as const,
         content: 'This is a long message '.repeat(1000)
       }));
