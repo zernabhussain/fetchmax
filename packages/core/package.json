@@ -1,6 +1,6 @@
 {
   "name": "@fetchmax/core",
-  "version": "1.0.0",
+  "version": "1.0.2",
   "description": "Modern, lightweight, and extensible HTTP client for JavaScript/TypeScript. Built on native Fetch API with powerful plugin system. Works in Node.js, Deno, Bun, and browsers.",
   "type": "module",
   "main": "./dist/index.js",
@@ -14,7 +14,8 @@
     }
   },
   "files": [
-    "dist"
+    "dist",
+    "README.md"
   ],
   "scripts": {
     "build": "tsup src/index.ts --format cjs,esm --dts --clean",

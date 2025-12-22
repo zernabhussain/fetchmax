@@ -1,6 +1,6 @@
 {
   "name": "@fetchmax/plugin-ai-agent",
-  "version": "1.0.0",
+  "version": "1.0.2",
   "description": "AI Agent connection plugin for FetchMax - unified interface for OpenAI, Anthropic, DeepSeek, and more",
   "type": "module",
   "main": "./dist/index.js",

@@ -1,6 +1,6 @@
 {
   "name": "@fetchmax/plugin-progress",
-  "version": "1.0.0",
+  "version": "1.0.2",
   "description": "Progress tracking plugin for FetchMax to monitor upload and download progress",
   "type": "module",
   "main": "./dist/index.js",

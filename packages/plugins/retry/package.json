@@ -1,6 +1,6 @@
 {
   "name": "@fetchmax/plugin-retry",
-  "version": "1.0.0",
+  "version": "1.0.2",
   "description": "Retry plugin for FetchMax with exponential and linear backoff strategies",
   "type": "module",
   "main": "./dist/index.js",

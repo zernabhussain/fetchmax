@@ -71,7 +71,7 @@
 
 | Library | Core Size (gzipped) | Full Bundle (gzipped) | Source |
 |---------|-------------------|---------------------|---------|
-| **FetchMax** | **3.5 KB** | **11.8 KB** (core + 9 plugins) | Verified via `gzip -c` |
+| **FetchMax** | **3.7 KB** | **11.8 KB** (core + 9 plugins) | Verified via `gzip -c` |
 | Axios | 13.4 KB | 13.4 KB | [Bundlephobia](https://bundlephobia.com/package/axios) |
 | ky | 4.8 KB | 4.8 KB | [Bundlephobia](https://bundlephobia.com/package/ky) |
 | Got | N/A (Node.js only) | ~50 KB | [Bundlephobia](https://bundlephobia.com/package/got) |
@@ -119,7 +119,7 @@
 
 ### 💪 Developer Experience
 - 🎯 **TypeScript First** - Perfect type inference and IntelliSense
-- 🪶 **Ultra-Lightweight** - 3.5KB core, 11.8KB with all plugins (gzipped)
+- 🪶 **Ultra-Lightweight** - 3.7KB core, 11.8KB with all plugins (gzipped)
 - 🌍 **Universal** - Browser, Node.js, Deno, Bun, Edge runtimes
 - 🔌 **14 Official Plugins** - Modular architecture, use only what you need
 - 📚 **Well Documented** - Comprehensive guides, examples, interactive demos
@@ -143,6 +143,19 @@ pnpm add @fetchmax/core
 
 ### Install Plugins
 
+#### AI Plugins ⭐ NEW
+
+```bash
+# Install AI agent foundation (required for all AI plugins)
+npm install @fetchmax/plugin-ai-agent
+
+# Install AI consumer plugins
+npm install @fetchmax/plugin-ai-mock       # Generate realistic mock API responses
+npm install @fetchmax/plugin-ai-translate  # Multi-language translation
+npm install @fetchmax/plugin-ai-summarize  # Content summarization
+npm install @fetchmax/plugin-ai-transform  # Custom AI transformations
+```
+
 #### Core Plugins
 
 ```bash
@@ -156,19 +169,6 @@ npm install @fetchmax/plugin-dedupe
 npm install @fetchmax/plugin-rate-limit
 npm install @fetchmax/plugin-transform
 npm install @fetchmax/plugin-progress
-```
-
-#### AI Plugins (Alpha)
-
-```bash
-# Install AI agent foundation (required for all AI plugins)
-npm install @fetchmax/plugin-ai-agent
-
-# Install AI consumer plugins
-npm install @fetchmax/plugin-ai-mock       # Generate realistic mock API responses
-npm install @fetchmax/plugin-ai-translate  # Multi-language translation
-npm install @fetchmax/plugin-ai-summarize  # Content summarization
-npm install @fetchmax/plugin-ai-transform  # Custom AI transformations
 ```
 
 ---

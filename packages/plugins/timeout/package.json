@@ -1,6 +1,6 @@
 {
   "name": "@fetchmax/plugin-timeout",
-  "version": "1.0.0",
+  "version": "1.0.2",
   "description": "Timeout plugin for FetchMax with per-request timeout control",
   "type": "module",
   "main": "./dist/index.js",

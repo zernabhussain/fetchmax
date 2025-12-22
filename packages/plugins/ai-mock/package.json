@@ -1,6 +1,6 @@
 {
   "name": "@fetchmax/plugin-ai-mock",
-  "version": "1.0.0",
+  "version": "1.0.2",
   "description": "AI-powered mock data generator for FetchMax - generate realistic API responses using AI",
   "type": "module",
   "main": "./dist/index.js",

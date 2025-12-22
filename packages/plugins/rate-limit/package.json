@@ -1,6 +1,6 @@
 {
   "name": "@fetchmax/plugin-rate-limit",
-  "version": "1.0.0",
+  "version": "1.0.2",
   "description": "Rate limiting plugin for FetchMax to control request frequency",
   "type": "module",
   "main": "./dist/index.js",
