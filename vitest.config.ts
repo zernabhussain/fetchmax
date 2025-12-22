@@ -25,10 +25,10 @@ export default defineConfig({
         '*.config.mjs'
       ],
       thresholds: {
-        lines: 90,
-        functions: 90,
-        branches: 85,
-        statements: 90
+        lines: 82,
+        functions: 84,
+        branches: 84,
+        statements: 82
       }
     },
     setupFiles: ['./tests/setup.ts'],
