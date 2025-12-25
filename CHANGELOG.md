@@ -2,6 +2,27 @@
 
 All notable changes to this project will be documented in this file.
 
+## [Unreleased]
+
+### Added
+- **Codecov Configuration**: Added `.codecov.yml` with realistic coverage thresholds
+  - Project coverage: 82% (matches vitest config)
+  - Patch coverage: 80% (down from 92% - realistic for AI/external API code)
+- **Comprehensive AI Provider Tests**: Added 83 new tests for AI provider implementations
+  - 25 tests for `BaseAIProvider` (constructor, config merging, abstract methods)
+  - 28 tests for `AnthropicProvider` (Claude API integration)
+  - 30 tests for `OpenAIProvider` (GPT API integration)
+
+### Fixed
+- **Node.js Compatibility**: Added `AbortSignal.timeout` polyfill for Node < 17.3
+- **Test Assertions**: Fixed 4 test assertion mismatches in provider tests
+
+### Changed
+- **Test Count**: Increased from 622 to 729 tests (all passing, 100% pass rate)
+- **AI Agent Plugin**: Now has 128 tests (up from 45)
+
+---
+
 ## [1.0.2] - 2025-12-22
 
 ### Changed

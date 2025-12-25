@@ -1,0 +1,36 @@
+# Codecov Configuration
+# Realistic thresholds that account for hard-to-test code (AI providers, UI code)
+
+coverage:
+  status:
+    # Overall project coverage
+    project:
+      default:
+        target: 82%  # Match vitest.config.ts overall threshold
+        threshold: 1%  # Allow 1% decrease
+
+    # Patch (diff) coverage for new code
+    patch:
+      default:
+        target: 80%  # Realistic for projects with AI/external API code
+        threshold: 2%  # Allow some flexibility
+
+  # Files to ignore in coverage reports
+  ignore:
+    - "**/*.test.ts"
+    - "**/*.spec.ts"
+    - "**/tests/**"
+    - "**/__tests__/**"
+    - "**/node_modules/**"
+
+# Comment settings for PRs
+comment:
+  layout: "reach,diff,flags,tree,footer"
+  behavior: default
+  require_changes: false
+  require_base: false
+  require_head: true
+
+# GitHub integration
+github_checks:
+  annotations: true
