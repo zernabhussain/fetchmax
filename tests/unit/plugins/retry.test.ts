@@ -591,6 +591,118 @@ describe('Retry Plugin', () => {
     });
   });
 
+  describe('network error handling', () => {
+    it('should retry on NETWORK_ERROR code', async () => {
+      let attempts = 0;
+
+      server.use(
+        http.get('https://api.test.com/test', () => {
+          attempts++;
+          if (attempts === 1) {
+            // Simulate network error
+            const error: any = new Error('Network error');
+            error.code = 'NETWORK_ERROR';
+            throw error;
+          }
+          return Response.json({ success: true });
+        })
+      );
+
+      const client = new HttpClient().use(
+        retryPlugin({ maxRetries: 2, retryDelay: 50 })
+      );
+
+      const promise = client.get('https://api.test.com/test');
+      await vi.advanceTimersByTimeAsync(200);
+      const response = await promise;
+
+      expect(attempts).toBe(2);
+      expect(response.data).toEqual({ success: true });
+    });
+
+    it('should retry on TIMEOUT_ERROR code', async () => {
+      let attempts = 0;
+
+      server.use(
+        http.get('https://api.test.com/test', () => {
+          attempts++;
+          if (attempts === 1) {
+            // Simulate timeout error
+            const error: any = new Error('Timeout error');
+            error.code = 'TIMEOUT_ERROR';
+            throw error;
+          }
+          return Response.json({ success: true });
+        })
+      );
+
+      const client = new HttpClient().use(
+        retryPlugin({ maxRetries: 2, retryDelay: 50 })
+      );
+
+      const promise = client.get('https://api.test.com/test');
+      await vi.advanceTimersByTimeAsync(200);
+      const response = await promise;
+
+      expect(attempts).toBe(2);
+      expect(response.data).toEqual({ success: true });
+    });
+
+    it('should retry on NetworkError name', async () => {
+      let attempts = 0;
+
+      server.use(
+        http.get('https://api.test.com/test', () => {
+          attempts++;
+          if (attempts === 1) {
+            const error: any = new Error('Network failed');
+            error.name = 'NetworkError';
+            throw error;
+          }
+          return Response.json({ success: true });
+        })
+      );
+
+      const client = new HttpClient().use(
+        retryPlugin({ maxRetries: 2, retryDelay: 50 })
+      );
+
+      const promise = client.get('https://api.test.com/test');
+      await vi.advanceTimersByTimeAsync(200);
+      const response = await promise;
+
+      expect(attempts).toBe(2);
+      expect(response.data).toEqual({ success: true });
+    });
+
+    it('should retry on TimeoutError name', async () => {
+      let attempts = 0;
+
+      server.use(
+        http.get('https://api.test.com/test', () => {
+          attempts++;
+          if (attempts === 1) {
+            const error: any = new Error('Request timeout');
+            error.name = 'TimeoutError';
+            throw error;
+          }
+          return Response.json({ success: true });
+        })
+      );
+
+      const client = new HttpClient().use(
+        retryPlugin({ maxRetries: 2, retryDelay: 50 })
+      );
+
+      const promise = client.get('https://api.test.com/test');
+      await vi.advanceTimersByTimeAsync(200);
+      const response = await promise;
+
+      expect(attempts).toBe(2);
+      expect(response.data).toEqual({ success: true });
+    });
+  });
+
   describe('context persistence', () => {
     it('should persist retry count in context', async () => {
       let attempts = 0;
@@ -678,4 +790,5 @@ describe('Retry Plugin', () => {
       expect(secondRetries).toEqual([1, 2]);
     });
   });
+
 });

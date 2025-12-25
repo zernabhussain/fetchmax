@@ -41,6 +41,8 @@ jobs:
 
       - name: Run unit and integration tests
         run: npm test -- --run
+        # Note: Real API tests in tests/integration/real-api/ are automatically
+        # skipped unless ENABLE_REAL_API_TESTS=true in .env (which is NOT set in CI)
 
       - name: Install Playwright browsers
         run: npx playwright install --with-deps

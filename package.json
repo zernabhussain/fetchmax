@@ -1,6 +1,6 @@
 {
   "name": "fetchmax-monorepo",
-  "version": "1.0.1",
+  "version": "1.0.0",
   "private": true,
   "description": "The ultimate universal HTTP client for JavaScript and TypeScript",
   "type": "module",
@@ -16,6 +16,7 @@
     "test": "vitest",
     "test:unit": "vitest run tests/unit",
     "test:integration": "vitest run tests/integration",
+    "test:integration:real-api": "vitest run tests/integration/real-api",
     "test:e2e": "vitest run --config vitest.e2e.config.ts",
     "test:coverage": "vitest run --coverage",
     "test:watch": "vitest watch",
@@ -33,10 +34,13 @@
     "lint": "eslint . --ext .ts,.tsx",
     "lint:fix": "eslint . --ext .ts,.tsx --fix",
     "format": "prettier --write \"**/*.{ts,tsx,json,md}\"",
-    "typecheck": "tsc --noEmit",
+    "typecheck": "tsc --project tsconfig.prod.json --noEmit",
+    "typecheck:all": "tsc --noEmit",
     "bench": "vitest bench",
     "clean": "rimraf packages/*/dist node_modules/.cache",
-    "prepublishOnly": "npm run build"
+    "prepublishOnly": "npm run build",
+    "publish:all": "bash scripts/publish-all.sh",
+    "publish:all:windows": "powershell -ExecutionPolicy Bypass -File scripts/publish-all.ps1"
   },
   "devDependencies": {
     "@playwright/test": "^1.40.0",
@@ -45,6 +49,7 @@
     "@typescript-eslint/parser": "^6.13.0",
     "@vitest/browser": "^1.0.4",
     "@vitest/coverage-v8": "^1.0.4",
+    "dotenv": "^16.4.5",
     "eslint": "^8.55.0",
     "eslint-config-prettier": "^9.1.0",
     "happy-dom": "^12.10.3",

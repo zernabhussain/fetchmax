@@ -11,6 +11,12 @@ export interface LoggerConfig {
   verbose?: boolean;
   /** Use colors in console output (default: true) */
   colors?: boolean;
+  /** Log request headers (default: false) */
+  logHeaders?: boolean;
+  /** Log request body (default: false) */
+  logRequestBody?: boolean;
+  /** Log response data (default: false) */
+  logResponseData?: boolean;
   /** Filter function to determine which requests to log */
   filter?: (request: any) => boolean;
   /** Custom logger function */
@@ -20,6 +26,8 @@ export interface LoggerConfig {
     group?: (...args: any[]) => void;
     groupEnd?: () => void;
   };
+  /** Custom log function (shorthand for logger.log) */
+  log?: (message: string) => void;
 }
 
 /**
@@ -42,9 +50,21 @@ export function loggerPlugin(config: LoggerConfig = {}): Plugin {
     logErrors = true,
     verbose = false,
     colors = true,
+    logHeaders = false,
+    logRequestBody = false,
+    logResponseData = false,
     filter,
-    logger = console
+    logger: customLogger,
+    log: customLog
   } = config;
+
+  // Use custom log function if provided, otherwise use logger
+  const logger = customLog ? {
+    log: customLog,
+    error: customLog,
+    group: undefined,
+    groupEnd: undefined
+  } : (customLogger || console);
 
   const emoji = {
     request: '🚀',
@@ -79,6 +99,87 @@ export function loggerPlugin(config: LoggerConfig = {}): Plugin {
     const sizes = ['B', 'KB', 'MB', 'GB'];
     const i = Math.floor(Math.log(bytes) / Math.log(k));
     return `${(bytes / Math.pow(k, i)).toFixed(2)} ${sizes[i]}`;
+  }
+
+  /**
+   * Redact sensitive data from objects
+   */
+  function redactSensitiveData(data: any): any {
+    if (!data || typeof data !== 'object') {
+      return data;
+    }
+
+    if (Array.isArray(data)) {
+      return data.map(item => redactSensitiveData(item));
+    }
+
+    const redacted: any = {};
+    const sensitiveKeys = ['password', 'pass', 'pwd', 'secret', 'apikey', 'api_key', 'token', 'accesstoken', 'access_token'];
+
+    for (const [key, value] of Object.entries(data)) {
+      const lowerKey = key.toLowerCase();
+
+      // Redact sensitive field names
+      if (sensitiveKeys.includes(lowerKey)) {
+        redacted[key] = '[REDACTED]';
+        continue;
+      }
+
+      // Redact credit card numbers (various formats)
+      if (typeof value === 'string') {
+        // Check for credit card patterns (with or without dashes/spaces)
+        const ccPattern = /\b\d{4}[-\s]?\d{4}[-\s]?\d{4}[-\s]?\d{4}\b/g;
+        if (ccPattern.test(value)) {
+          redacted[key] = '[REDACTED-CC]';
+          continue;
+        }
+
+        // Check for SSN patterns (XXX-XX-XXXX)
+        const ssnPattern = /\b\d{3}-\d{2}-\d{4}\b/g;
+        if (ssnPattern.test(value)) {
+          redacted[key] = '[REDACTED-SSN]';
+          continue;
+        }
+      }
+
+      // Recursively redact nested objects
+      if (typeof value === 'object' && value !== null) {
+        redacted[key] = redactSensitiveData(value);
+      } else {
+        redacted[key] = value;
+      }
+    }
+
+    return redacted;
+  }
+
+  /**
+   * Redact sensitive headers
+   */
+  function redactHeaders(headers: any): any {
+    if (!headers || typeof headers !== 'object') {
+      return headers;
+    }
+
+    const redacted: any = {};
+    const sensitiveHeaders = ['authorization', 'cookie', 'x-api-key', 'api-key'];
+
+    for (const [key, value] of Object.entries(headers)) {
+      const lowerKey = key.toLowerCase();
+
+      if (sensitiveHeaders.includes(lowerKey)) {
+        // Show last 4 characters for debugging
+        if (typeof value === 'string' && value.length > 4) {
+          redacted[key] = `***${value.slice(-4)}`;
+        } else {
+          redacted[key] = '[REDACTED]';
+        }
+      } else {
+        redacted[key] = value;
+      }
+    }
+
+    return redacted;
   }
 
   /**
@@ -118,15 +219,17 @@ export function loggerPlugin(config: LoggerConfig = {}): Plugin {
         logger.log(`${emoji.request} ${boldColor}${method}${resetColor} ${url}`);
       }
 
-      if (verbose) {
-        if (request.headers && Object.keys(request.headers).length > 0) {
-          logger.log('  Headers:', request.headers);
+      if (verbose || logHeaders || logRequestBody) {
+        if ((verbose || logHeaders) && request.headers && Object.keys(request.headers).length > 0) {
+          const redactedHeaders = redactHeaders(request.headers);
+          logger.log('  Headers: ' + JSON.stringify(redactedHeaders));
         }
-        if (request.params && Object.keys(request.params).length > 0) {
-          logger.log('  Params:', request.params);
+        if (verbose && request.params && Object.keys(request.params).length > 0) {
+          logger.log('  Params: ' + JSON.stringify(request.params));
         }
-        if (request.body) {
-          logger.log('  Body:', request.body);
+        if ((verbose || logRequestBody) && request.body) {
+          const redactedBody = redactSensitiveData(request.body);
+          logger.log('  Body: ' + JSON.stringify(redactedBody));
         }
       }
 
@@ -171,31 +274,36 @@ export function loggerPlugin(config: LoggerConfig = {}): Plugin {
         );
       }
 
-      if (verbose) {
-        logger.log('  Status:', status, response.statusText);
-
-        // Log response headers
-        const headers: Record<string, string> = {};
-        response.headers.forEach((value, key) => {
-          headers[key] = value;
-        });
-        if (Object.keys(headers).length > 0) {
-          logger.log('  Headers:', headers);
+      if (verbose || logResponseData) {
+        if (verbose) {
+          logger.log('  Status: ' + status + ' ' + response.statusText);
         }
 
-        // Log response size
-        const contentLength = response.headers.get('content-length');
-        if (contentLength) {
-          logger.log('  Size:', formatBytes(parseInt(contentLength, 10)));
+        // Log response headers
+        if (verbose) {
+          const headers: Record<string, string> = {};
+          response.headers.forEach((value, key) => {
+            headers[key] = value;
+          });
+          if (Object.keys(headers).length > 0) {
+            logger.log('  Headers: ' + JSON.stringify(headers));
+          }
+
+          // Log response size
+          const contentLength = response.headers.get('content-length');
+          if (contentLength) {
+            logger.log('  Size: ' + formatBytes(parseInt(contentLength, 10)));
+          }
         }
 
         // Log response data (truncated if large)
-        if (response.data) {
-          const dataStr = JSON.stringify(response.data);
+        if ((verbose || logResponseData) && response.data) {
+          const redactedData = redactSensitiveData(response.data);
+          const dataStr = JSON.stringify(redactedData);
           if (dataStr.length > 1000) {
-            logger.log('  Data:', dataStr.substring(0, 1000) + '... (truncated)');
+            logger.log('  Data: ' + dataStr.substring(0, 1000) + '... (truncated)');
           } else {
-            logger.log('  Data:', response.data);
+            logger.log('  Data: ' + dataStr);
           }
         }
       }
@@ -236,23 +344,23 @@ export function loggerPlugin(config: LoggerConfig = {}): Plugin {
         );
       }
 
-      logger.error('  Error:', error.message);
+      logger.error('  Error: ' + error.message);
 
       if (verbose) {
         if (error.code) {
-          logger.error('  Code:', error.code);
+          logger.error('  Code: ' + error.code);
         }
 
         if (error.data) {
-          logger.error('  Data:', error.data);
+          logger.error('  Data: ' + JSON.stringify(error.data));
         }
 
         if (error.stack) {
-          logger.error('  Stack:', error.stack);
+          logger.error('  Stack: ' + error.stack);
         }
 
         if (error.config) {
-          logger.error('  Config:', error.config);
+          logger.error('  Config: ' + JSON.stringify(error.config));
         }
       }
 
