@@ -8,7 +8,7 @@ import type { AIMessage, AIResponse, AIStreamChunk, AIModelConfig } from '../../
 class MockAIProvider extends BaseAIProvider {
   readonly name = 'mock';
 
-  async ask(prompt: string, options?: Partial<AIModelConfig>): Promise<AIResponse> {
+  async ask(prompt: string, _options?: Partial<AIModelConfig>): Promise<AIResponse> {
     return {
       content: `Mock response to: ${prompt}`,
       finishReason: 'stop',
@@ -18,14 +18,14 @@ class MockAIProvider extends BaseAIProvider {
   }
 
   async askJSON<T = any>(
-    prompt: string,
-    schema?: any,
-    options?: Partial<AIModelConfig>
+    _prompt: string,
+    _schema?: any,
+    _options?: Partial<AIModelConfig>
   ): Promise<T> {
     return { mock: true } as T;
   }
 
-  async chat(messages: AIMessage[], options?: Partial<AIModelConfig>): Promise<AIResponse> {
+  async chat(_messages: AIMessage[], _options?: Partial<AIModelConfig>): Promise<AIResponse> {
     return {
       content: 'Mock chat response',
       finishReason: 'stop',
@@ -35,8 +35,8 @@ class MockAIProvider extends BaseAIProvider {
   }
 
   async *stream(
-    prompt: string,
-    options?: Partial<AIModelConfig>
+    _prompt: string,
+    _options?: Partial<AIModelConfig>
   ): AsyncGenerator<AIStreamChunk, void, unknown> {
     yield { content: 'chunk1', done: false };
     yield { content: 'chunk2', done: false };
